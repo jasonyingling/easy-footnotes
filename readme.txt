@@ -3,8 +3,8 @@ Contributors: yingling017
 Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
-Tested up to: 4.4.2
-Stable tag: 1.0.8
+Tested up to: 4.7.1
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,11 +36,11 @@ I know, but that's not really a question.
 
 = Oh right, why is that so awesome? =
 
-Because it's easy. And it's integrated with the qTip2 jQuery plugin to display your footnotes in lovely tooltips on hover. Plus it automatically numbers your footnotes in the order you enter them into your post. 
+Because it's easy. And it's integrated with the qTip2 jQuery plugin to display your footnotes in lovely tooltips on hover. Plus it automatically numbers your footnotes in the order you enter them into your post.
 
 = Any plans for the future? =
 
-Yeah, I'll be integrating more of qTip's options for displaying the tooltips. Give users the ability to set their own icons and labels. And much more as I get user feedback. 
+Yeah, I'll be integrating more of qTip's options for displaying the tooltips. Give users the ability to set their own icons and labels. And much more as I get user feedback.
 
 = That sounds great, but I was thinking more personally. You know, are you up to anything tonight? Want to grab some pizza? =
 
@@ -58,7 +58,10 @@ Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere 
 
 == Changelog ==
 
-= 1.0.7 =
+= 1.0.9 =
+* Fixed issue causing notice of undefined index on admin screen. Adjustment to how footnote's handle html special chars.
+
+= 1.0.8 =
 * Added the Qtip2 unfocus event for hiding footnotes on iPad and other touch devices.
 
 = 1.0.7 =
@@ -113,3 +116,6 @@ Fixed issue where Footnote title was showing on pages without any footnotes once
 
 = 1.0.8 =
 Improved footnote usability on touch devices.
+
+= 1.0.9 =
+Fixed issue causing notice of undefined index on admin screen. Adjustment to how footnote's handle html special chars.
