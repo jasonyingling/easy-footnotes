@@ -35,7 +35,7 @@
 		<p><?php _e("Want to add a label to your footnotes section at the bottom of your post? Just enter some text here and check the box and you're good to go."); ?></p>
         <p><?php _e("Easy Footnotes Label: "); ?><input type="text" name="easy_footnotes_label" value="<?php echo $easyFootnoteLabel; ?>" size="20"></p>
 
-		<p><?php _e("Insert Easy Footnotes Label: "); ?><input type="checkbox" name="easy_footnote_check" <?php if ($easyFootnoteCheck === true) { echo 'checked'; } ?> size="20"><?php _e(""); ?></p>
+		<p><?php _e("Insert Easy Footnotes Label: "); ?><input type="checkbox" name="easy_footnote_check" <?php checked($easyFootnoteCheck); ?> size="20"><?php _e(""); ?></p>
 
         <p class="submit">
         <input type="submit" name="Submit" value="<?php _e('Update Options', 'easy_footnotes_trdom' ) ?>" />
