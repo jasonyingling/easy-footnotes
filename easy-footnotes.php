@@ -136,5 +136,3 @@ class easyFootnotes {
 }
 
 $easyFootnotes = new easyFootnotes();
-
-?>
