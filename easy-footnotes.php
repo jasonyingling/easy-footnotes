@@ -73,7 +73,7 @@ class easyFootnotes {
 			$footnoteLink = get_permalink(get_the_ID()).'#easy-footnote-bottom-'.$this->footnoteCount;
 		}
 
-		$footnoteContent = "<span id='easy-footnote-".$this->footnoteCount."' class='easy-footnote-margin-adjust'></span><span class='easy-footnote'><a href='".$footnoteLink."' title='".htmlspecialchars($content, ENT_QUOTES)."'><sup>$this->footnoteCount</sup></a></span>";
+		$footnoteContent = "<span id='easy-footnote-".esc_attr($this->footnoteCount)."' class='easy-footnote-margin-adjust'></span><span class='easy-footnote'><a href='".esc_url($footnoteLink)."' title='".htmlspecialchars($content, ENT_QUOTES)."'><sup>".esc_html($this->footnoteCount)."</sup></a></span>";
 
 		return $footnoteContent;
 	}
@@ -109,11 +109,11 @@ class easyFootnotes {
 			$efLabel = $footnoteOptions['footnoteLabel'];
 
 			foreach ($footnotesInsert as $count => $footnote) {
-				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-'.$count.'" class="easy-footnote-margin-adjust"></span>'.$footnote.'<a class="easy-footnote-to-top" href="#easy-footnote-'.$count.'"></a></li>';
+				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-'.esc_attr($count).'" class="easy-footnote-margin-adjust"></span>'.wp_kses_post($footnote).'<a class="easy-footnote-to-top" href="'.esc_url('#easy-footnote-'.$count).'"></a></li>';
 			}
 			if (!empty($footnotesInsert)) {
 				if ($useLabel === true) {
-					$content .= '<div class="easy-footnote-title"><h4>'.$efLabel.'</h4></div><ol class="easy-footnotes-wrapper">'.$footnoteCopy.'</ol>';
+					$content .= '<div class="easy-footnote-title"><h4>'.esc_html($efLabel).'</h4></div><ol class="easy-footnotes-wrapper">'.$footnoteCopy.'</ol>';
 				} else {
 					$content .= '<ol class="easy-footnotes-wrapper">'.$footnoteCopy.'</ol>';
 				}
