@@ -3,8 +3,7 @@ jQuery(document).ready(function($){
 		position: {
 	        my: 'top center',  // Position my top left...
 	        at: 'bottom center', // at the bottom right of...
-	        //target: $('.container-post') // my target
-	        //viewport: $('.post_copy')
+	        viewport: $(window)
 	    },
 	    style: {
 		    classes: 'qtip-bootstrap'

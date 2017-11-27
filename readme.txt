@@ -3,8 +3,8 @@ Contributors: yingling017
 Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
-Tested up to: 4.7.1
-Stable tag: 1.0.9
+Tested up to: 4.9
+Stable tag: 1.0.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,12 @@ Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere 
 2. Several footnotes (feetnote?) at the bottom of the post.
 
 == Changelog ==
+
+= 1.0.11 =
+* Fixed bug to prevent tooltips from opening off the screen
+
+= 1.0.10 =
+* Added in extra sanitization for user inputs within admin
 
 = 1.0.9 =
 * Fixed issue causing notice of undefined index on admin screen. Adjustment to how footnote's handle html special chars.
@@ -119,3 +125,9 @@ Improved footnote usability on touch devices.
 
 = 1.0.9 =
 Fixed issue causing notice of undefined index on admin screen. Adjustment to how footnote's handle html special chars.
+
+= 1.0.10 =
+Sanitizing inputs
+
+= 1.0.11 =
+Fixed bug to prevent tooltips from opening off the screen
