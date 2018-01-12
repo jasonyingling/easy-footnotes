@@ -3,7 +3,7 @@
  * Plugin Name: Easy Footnotes
  * Plugin URI: http://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
- * Version: 1.0.11
+ * Version: 1.0.12
  * Author: Jason Yingling
  * Author URI: http://jasonyingling.me
  * License: GPL2
@@ -64,7 +64,24 @@ class easyFootnotes {
 		extract (shortcode_atts(array(
 		), $atts));
 
-		$this->easy_footnote_count($this->footnoteCount, get_the_ID());
+		// Get an array of all of the footnotes
+		$pattern = '/\[note\](.*?)\[\/note\]/';
+		preg_match_all( $pattern, get_the_content(get_the_ID()), $shortcodes );
+
+		// If the current content matches the first [note] set the count to 0. This prevents extra counting by themes using the_content
+ 		if ( $content === $shortcodes[1][0] ) {
+			$count = 0;
+		} else {
+			$count = $this->footnoteCount;
+		}
+
+		// Increment the counter
+		$count++;
+
+		// Set the footnoteCount (This whole process needs reworked)
+		$this->footnoteCount = $count;
+
+		//$this->easy_footnote_count($this->footnoteCount, get_the_ID());
 		$this->easy_footnote_content($content);
 
 		if (is_singular() && is_main_query()) {
@@ -98,11 +115,11 @@ class easyFootnotes {
 		return $this->footnoteCount;
 	}
 
-	// Calculate reading time by running it through the_content
 	public function easy_footnote_after_content($content) {
 		if (is_singular() && is_main_query()) {
 			$footnotesInsert = $this->footnotes;
-			global $footnoteCopy;
+
+			$footnoteCopy = '';
 
 			$footnoteOptions = get_option('easy_footnotes_options');
 			$useLabel = $footnoteOptions['useLabel'];
