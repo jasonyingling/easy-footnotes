@@ -4,7 +4,7 @@ Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
 Tested up to: 4.9.1
-Stable tag: 1.0.12
+Stable tag: 1.0.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,9 @@ Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere 
 2. Several footnotes (feetnote?) at the bottom of the post.
 
 == Changelog ==
+
+= 1.0.13 =
+* Fixing PHP notice on shortcode when content not found
 
 = 1.0.12 =
 * Changing how footnotes are numbered to avoid duplicates caused by `the_content` filtering being applied earlier in themes.
@@ -137,3 +140,6 @@ Fixed bug to prevent tooltips from opening off the screen
 
 = 1.0.12 =
 Changing how footnotes are numbered to avoid duplicates caused by `the_content` filtering being applied earlier in themes.
+
+= 1.0.13 =
+Fixing PHP notice on shortcode when content not found

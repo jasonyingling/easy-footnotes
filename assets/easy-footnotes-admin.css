@@ -1,0 +1,47 @@
+.efn-preview {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	margin-top: 40px;
+}
+
+@media screen and ( max-width: 768px ) {
+	.efn-preview {
+		flex-wrap: wrap;
+	}
+}
+
+.efn-theme-link {
+	max-width: 400px;
+	min-width: 320px;
+	width: 100%;
+	margin-right: 20px;
+	flex: 1 0 auto;
+}
+
+.efn-theme-link img {
+	max-width: 100%;
+	height: auto;
+}
+
+.efn-preview-copy {
+	flex: 0 1 auto;
+}
+
+.efn-theme-button {
+	padding: 14px 20px;
+	display: block;
+	float: left;
+	background: #08aeea;
+	border-radius: 10px;
+	color: #ffffff;
+	text-decoration: none;
+	font-size: 18px;
+	margin-top: 10px;
+}
+
+.efn-theme-button:hover,
+.efn-theme-butotn:focus {
+	opacity: .75;
+	color: #ffffff
+}

@@ -3,7 +3,7 @@
  * Plugin Name: Easy Footnotes
  * Plugin URI: http://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
- * Version: 1.0.12
+ * Version: 1.0.13
  * Author: Jason Yingling
  * Author URI: http://jasonyingling.me
  * License: GPL2
@@ -43,6 +43,7 @@ class easyFootnotes {
 		add_filter('the_content', array($this, 'easy_footnote_after_content'), 20);
 		add_action('wp_enqueue_scripts', array($this, 'register_qtip_scripts'));
 		add_action('admin_menu', array($this, 'easy_footnotes_admin_actions'));
+		add_action( 'admin_enqueue_scripts', array($this, 'easy_footnotes_admin_scripts') );
 	}
 
 	public function register_qtip_scripts() {
@@ -66,10 +67,10 @@ class easyFootnotes {
 
 		// Get an array of all of the footnotes
 		$pattern = '/\[note\](.*?)\[\/note\]/';
-		preg_match_all( $pattern, get_the_content(get_the_ID()), $shortcodes );
+		preg_match_all( $pattern, get_the_content( get_the_ID() ), $shortcodes );
 
 		// If the current content matches the first [note] set the count to 0. This prevents extra counting by themes using the_content
- 		if ( $content === $shortcodes[1][0] ) {
+ 		if ( isset( $shortcodes[1][0] ) && $content === $shortcodes[1][0] ) {
 			$count = 0;
 		} else {
 			$count = $this->footnoteCount;
@@ -148,6 +149,10 @@ class easyFootnotes {
 
 	public function easy_footnotes_admin_actions() {
 		add_options_page("Easy Footnotes Settings", "Easy Footnotes", "manage_options", "easy-footnotes-settings", array($this, "easy_footnotes_admin"));
+	}
+
+	public function easy_footnotes_admin_scripts() {
+		wp_enqueue_style( 'easy-footnotes-admin-styles', plugins_url( '/assets/easy-footnotes-admin.css' , __FILE__ ), '', '1.0.13' );
 	}
 
 }
