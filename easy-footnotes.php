@@ -1,15 +1,15 @@
 <?php
 /**
  * Plugin Name: Easy Footnotes
- * Plugin URI: http://jasonyingling.me/easy-footnotes-wordpress/
+ * Plugin URI: https://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
- * Version: 1.0.13
+ * Version: 1.0.16
  * Author: Jason Yingling
- * Author URI: http://jasonyingling.me
+ * Author URI: https://jasonyingling.me
  * License: GPL2
  */
 
- /*  Copyright 2017  Jason Yingling  (email : yingling017@gmail.com)
+ /*  Copyright 2018  Jason Yingling  (email : yingling017@gmail.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as
@@ -36,11 +36,13 @@ class easyFootnotes {
 		$footnoteSettings = array(
 			'footnoteLabel' => 'Footnotes',
 			'useLabel' => false,
+			'hide_easy_footnote_after_posts' => false
 		);
 
 		add_option('easy_footnotes_options', $footnoteSettings);
 		add_shortcode( 'note', array($this, 'easy_footnote_shortcode') );
 		add_filter('the_content', array($this, 'easy_footnote_after_content'), 20);
+		add_filter('the_content', array($this, 'easy_footnote_reset'), 999);
 		add_action('wp_enqueue_scripts', array($this, 'register_qtip_scripts'));
 		add_action('admin_menu', array($this, 'easy_footnotes_admin_actions'));
 		add_action( 'admin_enqueue_scripts', array($this, 'easy_footnotes_admin_scripts') );
@@ -65,17 +67,12 @@ class easyFootnotes {
 		extract (shortcode_atts(array(
 		), $atts));
 
-		// Get an array of all of the footnotes
-		$pattern = '/\[note\](.*?)\[\/note\]/';
-		preg_match_all( $pattern, get_the_content( get_the_ID() ), $shortcodes );
+		$post_id = get_the_ID();
 
-		// If the current content matches the first [note] set the count to 0. This prevents extra counting by themes using the_content
- 		if ( isset( $shortcodes[1][0] ) && $content === $shortcodes[1][0] ) {
-			$count = 0;
-		} else {
-			$count = $this->footnoteCount;
-		}
+		$content = do_shortcode($content);
 
+		$count = $this->footnoteCount;
+		
 		// Increment the counter
 		$count++;
 
@@ -86,12 +83,12 @@ class easyFootnotes {
 		$this->easy_footnote_content($content);
 
 		if (is_singular() && is_main_query()) {
-			$footnoteLink = '#easy-footnote-bottom-'.$this->footnoteCount;
+			$footnoteLink = '#easy-footnote-bottom-'.$this->footnoteCount.'-'.$post_id;;
 		} else {
-			$footnoteLink = get_permalink(get_the_ID()).'#easy-footnote-bottom-'.$this->footnoteCount;
+			$footnoteLink = get_permalink(get_the_ID()).'#easy-footnote-bottom-'.$this->footnoteCount.'-'.$post_id;
 		}
 
-		$footnoteContent = "<span id='easy-footnote-".esc_attr($this->footnoteCount)."' class='easy-footnote-margin-adjust'></span><span class='easy-footnote'><a href='".esc_url($footnoteLink)."' title='".htmlspecialchars($content, ENT_QUOTES)."'><sup>".esc_html($this->footnoteCount)."</sup></a></span>";
+		$footnoteContent = "<span id='easy-footnote-".esc_attr($this->footnoteCount).'-'.$post_id."' class='easy-footnote-margin-adjust'></span><span class='easy-footnote'><a href='".esc_url($footnoteLink)."' title='".htmlspecialchars($content, ENT_QUOTES)."'><sup>".esc_html($this->footnoteCount)."</sup></a></span>";
 
 		return $footnoteContent;
 	}
@@ -117,17 +114,25 @@ class easyFootnotes {
 	}
 
 	public function easy_footnote_after_content($content) {
+
+		$footnoteOptions = get_option('easy_footnotes_options');
+		
+		if ( isset($footnoteOptions['hide_easy_footnote_after_posts']) && $footnoteOptions['hide_easy_footnote_after_posts'] ) {
+			return $content;
+		}
+
 		if (is_singular() && is_main_query()) {
 			$footnotesInsert = $this->footnotes;
 
 			$footnoteCopy = '';
 
-			$footnoteOptions = get_option('easy_footnotes_options');
 			$useLabel = $footnoteOptions['useLabel'];
 			$efLabel = $footnoteOptions['footnoteLabel'];
 
+			$post_id = get_the_ID();
+
 			foreach ($footnotesInsert as $count => $footnote) {
-				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-'.esc_attr($count).'" class="easy-footnote-margin-adjust"></span>'.wp_kses_post($footnote).'<a class="easy-footnote-to-top" href="'.esc_url('#easy-footnote-'.$count).'"></a></li>';
+				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-'.esc_attr($count).'-'.$post_id.'" class="easy-footnote-margin-adjust"></span>'.wp_kses_post($footnote).'<a class="easy-footnote-to-top" href="'.esc_url('#easy-footnote-'.$count.'-'.$post_id).'"></a></li>';
 			}
 			if (!empty($footnotesInsert)) {
 				if ($useLabel === true) {
@@ -137,8 +142,19 @@ class easyFootnotes {
 				}
 			}
 
-
 		}
+		
+		return $content;
+	}
+
+	/**
+	 * Reset the footnote count and footnote array each time the_content has been run.
+	 */
+	public function easy_footnote_reset($content) {
+		$this->footnoteCount = 0;
+
+		$this->footnotes = array();
+
 		return $content;
 	}
 

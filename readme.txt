@@ -3,8 +3,8 @@ Contributors: yingling017
 Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
-Tested up to: 4.9.1
-Stable tag: 1.0.13
+Tested up to: 4.9.5
+Stable tag: 1.0.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,18 @@ Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere 
 2. Several footnotes (feetnote?) at the bottom of the post.
 
 == Changelog ==
+
+= 1.0.16 =
+* Fixing footnote counts for the last time! (Hopefully)
+* Added post ID to footnote IDs to make them more unique
+* New setting to hide the footnotes after content in Settings > Easy Footnotes
+* Prep for a bigger update and beginning Gutenberg support
+
+= 1.0.15 =
+* Being a noob and not testing a link added in on settings page. It works now.
+
+= 1.0.14 =
+* CSS tweak in admin screen
 
 = 1.0.13 =
 * Fixing PHP notice on shortcode when content not found
@@ -143,3 +155,15 @@ Changing how footnotes are numbered to avoid duplicates caused by `the_content` 
 
 = 1.0.13 =
 Fixing PHP notice on shortcode when content not found
+
+= 1.0.14 =
+CSS tweak in admin screen
+
+= 1.0.15 =
+Being a noob and not testing a link added in on settings page. It works now.
+
+= 1.0.16 =
+* Fixing footnote counts for the last time! (Hopefully)
+* Added post ID to footnote IDs to make them more unique
+* New setting to hide the footnotes after content in Settings > Easy Footnotes
+* Prep for a bigger update and beginning Gutenberg support
