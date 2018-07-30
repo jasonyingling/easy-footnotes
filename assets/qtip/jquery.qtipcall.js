@@ -1,5 +1,6 @@
 jQuery(document).ready(function($){
 	$('.easy-footnote a').qtip({
+		prerender: true,
 		position: {
 	        my: 'top center',  // Position my top left...
 	        at: 'bottom center', // at the bottom right of...
