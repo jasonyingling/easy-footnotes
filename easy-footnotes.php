@@ -132,7 +132,7 @@ class easyFootnotes {
 			$post_id = get_the_ID();
 
 			foreach ($footnotesInsert as $count => $footnote) {
-				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-'.esc_attr($count).'-'.$post_id.'" class="easy-footnote-margin-adjust"></span>'.wp_kses_post($footnote).'<a class="easy-footnote-to-top" href="'.esc_url('#easy-footnote-'.$count.'-'.$post_id).'"></a></li>';
+				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-'.esc_attr($count).'-'.$post_id.'" class="easy-footnote-margin-adjust"></span>'.wp_kses_post($footnote).'<a class="easy-footnote-to-top" aria-label="Back to content" href="'.esc_url('#easy-footnote-'.$count.'-'.$post_id).'"></a></li>';
 			}
 			if (!empty($footnotesInsert)) {
 				if ($useLabel === true) {
