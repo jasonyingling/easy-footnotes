@@ -31,21 +31,38 @@ class easyFootnotes {
 	public $footnotes = array();
 	public $footnoteCount = 0;
 	public $prevPost;
+	public $footnoteOptions;
 
-	public function __construct() {
-		$footnoteSettings = array(
+	private $footnoteSettings = array(
 			'footnoteLabel' => 'Footnotes',
 			'useLabel' => false,
-			'hide_easy_footnote_after_posts' => false
+			'hide_easy_footnote_after_posts' => false,
+			'show_easy_footnote_on_front' => false
 		);
 
-		add_option('easy_footnotes_options', $footnoteSettings);
+	public function __construct() {
+		
+
+		add_option('easy_footnotes_options', $this->footnoteSettings);
 		add_shortcode( 'note', array($this, 'easy_footnote_shortcode') );
 		add_filter('the_content', array($this, 'easy_footnote_after_content'), 20);
 		add_filter('the_content', array($this, 'easy_footnote_reset'), 999);
 		add_action('wp_enqueue_scripts', array($this, 'register_qtip_scripts'));
 		add_action('admin_menu', array($this, 'easy_footnotes_admin_actions'));
 		add_action( 'admin_enqueue_scripts', array($this, 'easy_footnotes_admin_scripts') );
+		add_action('updated_option', array($this, 'easy_footnotes_options_updated'), 10, 3);
+
+		$this->footnoteOptions = get_option('easy_footnotes_options');
+
+	}
+
+
+	public function easy_footnotes_options_updated( $option_name, $old_value, $option_value ) {
+	        
+	    if (array_key_exists($option_name, $this->footnoteSettings)) {
+			$this->footnoteOptions = get_option('easy_footnotes_options');
+	    }
+
 	}
 
 	public function register_qtip_scripts() {
@@ -57,6 +74,15 @@ class easyFootnotes {
 	}
 
 	public function easy_footnote_shortcode($atts, $content = null) {
+
+		$footnoteOptions = $this->footnoteOptions; //get_option('easy_footnotes_options');
+
+		$b_ShowOnFront = false;
+
+		if ( isset($footnoteOptions['show_easy_footnote_on_front']) && $footnoteOptions['show_easy_footnote_on_front'] ) {
+			$b_ShowOnFront = is_front_page();
+		}
+
 		wp_enqueue_style( 'qtipstyles' );
 		wp_enqueue_style( 'easyfootnotescss' );
 		wp_enqueue_script( 'imagesloaded' );
@@ -82,7 +108,7 @@ class easyFootnotes {
 		//$this->easy_footnote_count($this->footnoteCount, get_the_ID());
 		$this->easy_footnote_content($content);
 
-		if (is_singular() && is_main_query()) {
+		if (( is_singular() || $b_ShowOnFront ) && is_main_query()) {
 			$footnoteLink = '#easy-footnote-bottom-'.$this->footnoteCount.'-'.$post_id;;
 		} else {
 			$footnoteLink = get_permalink(get_the_ID()).'#easy-footnote-bottom-'.$this->footnoteCount.'-'.$post_id;
@@ -115,13 +141,19 @@ class easyFootnotes {
 
 	public function easy_footnote_after_content($content) {
 
-		$footnoteOptions = get_option('easy_footnotes_options');
+		$footnoteOptions = $this->footnoteOptions; //get_option('easy_footnotes_options');
 		
+		$b_ShowOnFront = false;
+
 		if ( isset($footnoteOptions['hide_easy_footnote_after_posts']) && $footnoteOptions['hide_easy_footnote_after_posts'] ) {
 			return $content;
 		}
 
-		if (is_singular() && is_main_query()) {
+		if ( isset($footnoteOptions['show_easy_footnote_on_front']) && $footnoteOptions['show_easy_footnote_on_front'] ) {
+			$b_ShowOnFront = is_front_page();
+		}
+
+		if ( ( is_singular() || $b_ShowOnFront ) && is_main_query() ) {
 			$footnotesInsert = $this->footnotes;
 
 			$footnoteCopy = '';
@@ -169,6 +201,9 @@ class easyFootnotes {
 
 	public function easy_footnotes_admin_scripts() {
 		wp_enqueue_style( 'easy-footnotes-admin-styles', plugins_url( '/assets/easy-footnotes-admin.css' , __FILE__ ), '', '1.0.13' );
+
+	    wp_register_script('easy-footnotes-admin-scripts', plugins_url( '/assets/js/easy-footnotes-admin.js' , __FILE__ ), array( 'jquery' ), '1.0.1' );
+		wp_enqueue_script( 'easy-footnotes-admin-scripts' );
 	}
 
 }
