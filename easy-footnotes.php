@@ -3,7 +3,7 @@
  * Plugin Name: Easy Footnotes
  * Plugin URI: https://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
- * Version: 1.0.16
+ * Version: 1.0.17b
  * Author: Jason Yingling
  * Author URI: https://jasonyingling.me
  * License: GPL2
@@ -86,7 +86,7 @@ class easyFootnotes
         $content = do_shortcode($content);
 
         $count = $this->footnoteCount;
-        
+
         // Increment the counter
         $count++;
 
@@ -159,11 +159,19 @@ class easyFootnotes
                 if ($useLabel === true) {
                     $content .= '<div class="easy-footnote-title"><h4>'.esc_html($efLabel).'</h4></div><ol class="easy-footnotes-wrapper">'.$footnoteCopy.'</ol>';
                 } else {
-                    $content .= '<ol class="easy-footnotes-wrapper">'.$footnoteCopy.'</ol>';
+                    // add before footnote filter
+                    $footnote_content = '';
+                    $footnote_content = apply_filters( 'before_footnote', $footnote_content );
+
+                    $footnote_content .= '<ol class="easy-footnotes-wrapper">'.$footnoteCopy.'</ol>';
+
+                    // add after footnote filter:
+                    $footnote_content = apply_filters( 'after_footnote', $footnote_content );
+
+                    $content .= do_shortcode($footnote_content);
                 }
             }
         }
-        
         return $content;
     }
 
