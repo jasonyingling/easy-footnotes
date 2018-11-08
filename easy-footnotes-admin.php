@@ -5,6 +5,7 @@
     if (isset($_POST['easy_footnote_hidden']) && $_POST['easy_footnote_hidden'] == 'Y') {
         //Form data sent
         $easyFootnoteLabel = $_POST['easy_footnotes_label'];
+        $easyFootnoteCustomLabelMarkup = $_POST['easy_footnotes_custom_label_markup'];
         if ($_POST['easy_footnote_check']) {
             $easyFootnoteCheck = true;
         } else {
@@ -25,6 +26,7 @@
 
         $updateOptions = array(
             'footnoteLabel' => $easyFootnoteLabel,
+            'customLabelMarkup' => $easyFootnoteCustomLabelMarkup,
             'useLabel' => $easyFootnoteCheck,
             'hide_easy_footnote_after_posts' => $hide_easy_footnote_after_posts,
             'show_easy_footnote_on_front' => $show_easy_footnote_on_front,
@@ -36,6 +38,7 @@
     } else {
         //Normal page display
         $easyFootnoteLabel = $footnoteOptions['footnoteLabel'];
+        $easyFootnotesCustomLabelMarkup = $footnoteOptions['customLabelMarkup'];
         $easyFootnoteCheck = $footnoteOptions['useLabel'];
         $hide_easy_footnote_after_posts = $footnoteOptions['hide_easy_footnote_after_posts'];
         $show_easy_footnote_on_front = $footnoteOptions['show_easy_footnote_on_front'];
@@ -50,8 +53,9 @@
         <?php echo "<h4>" . esc_html__('Easy Footnotes Settings', 'easy_footnotes_trdom') . "</h4>"; ?>
 		<p><?php esc_html_e("Want to add a label to your footnotes section at the bottom of your post? Just enter some text here and check the box and you're good to go."); ?></p>
         <p><?php esc_html_e("Easy Footnotes Label: "); ?><input type="text" name="easy_footnotes_label" value="<?php echo esc_attr($easyFootnoteLabel); ?>" size="20"></p>
-
 		<p><?php esc_html_e("Insert Easy Footnotes Label: "); ?><input type="checkbox" name="easy_footnote_check" <?php checked($easyFootnoteCheck); ?> size="20"><?php esc_html_e(""); ?></p>
+        <p><?php esc_html_e("Customize Footnotes Label Markup"); ?><textarea name="easy_footnotes_custom_label_markup" rows="4" cols="50"><?php echo esc_attr($easyFootnotesCustomLabelMarkup); ?></textarea>
+
 
         <p><?php esc_html_e("Hide Footnotes after post content: "); ?><input type="checkbox" name="hide_easy_footnote_after_posts" <?php checked($hide_easy_footnote_after_posts); ?> size="20"><?php esc_html_e(""); ?></p>
 
