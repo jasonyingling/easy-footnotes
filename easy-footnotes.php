@@ -148,7 +148,8 @@ class easyFootnotes
             $footnoteCopy = '';
 
             $useLabel = $this->footnoteOptions['useLabel'];
-            $efLabel = $this->footnoteOptions['footnoteLabel'];
+            $efLabel = esc_html( $this->footnoteOptions['footnoteLabel'] );
+            $efCustomLabelMarkup = $this->footnoteOptions['customLabelMarkup'];
 
             $post_id = get_the_ID();
 
@@ -157,10 +158,13 @@ class easyFootnotes
             }
             if (!empty($footnotesInsert)) {
                 if ($useLabel === true) {
-                    $content .= '<div class="easy-footnote-title"><h4>'.esc_html($efLabel).'</h4></div><ol class="easy-footnotes-wrapper">'.$footnoteCopy.'</ol>';
-                } else {
-                    $content .= '<ol class="easy-footnotes-wrapper">'.$footnoteCopy.'</ol>';
+                    if ($efCustomLabelMarkup) {
+                        $content .= str_replace('{{label}}', $efLabel, $efCustomLabelMarkup);
+                    } else {
+                        $content .= '<div class="easy-footnote-title"><h4>'.$efLabel.'</h4></div>';
+                    }
                 }
+                $content .= '<ol class="easy-footnotes-wrapper">'.$footnoteCopy.'</ol>';
             }
         }
         
