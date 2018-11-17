@@ -1,10 +1,10 @@
 === Easy Footnotes ===
-Contributors: yingling017
+Contributors: yingling017, twinpictures
 Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
-Tested up to: 4.9.5
-Stable tag: 1.0.16
+Tested up to: 5.0-alpha-43773
+Stable tag: 1.0.17a
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,9 @@ Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere 
 2. Several footnotes (feetnote?) at the bottom of the post.
 
 == Changelog ==
+
+= 1.0.17 =
+* added ‘easy_footnote’ hook to filter footnotes
 
 = 1.0.16 =
 * Fixing footnote counts for the last time! (Hopefully)
