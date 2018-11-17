@@ -11,7 +11,7 @@ if ( isset( $_POST['easy_footnote_hidden'] ) ) {
 	// Check the nonce for the Reading Time.
 	check_admin_referer( 'easy_footnotes_settings_nonce' );
 
-	if ( isset( $_POST['easy_footnote_check'] ) && 'Y' === $_POST['easy_footnote_check'] ) :
+	if ( 'Y' === $_POST['easy_footnote_hidden'] ) :
 		// Form data sent.
 		$easyFootnoteLabel = ( isset( $_POST['easy_footnotes_label'] ) ) ? sanitize_text_field( wp_unslash( $_POST['easy_footnotes_label'] ) ) : '';
 

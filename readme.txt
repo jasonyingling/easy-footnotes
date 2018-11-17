@@ -22,13 +22,13 @@ That's all it takes to start adding footnotes to your WordPress blog!
 
 1. Upload the 'easy-footnotes' folder to the '/wp-content/plugins/' directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. That's it! Now simply start using the [note]Footnote content goes here.[/note] shortcode within your posts.
+3. That's it! Now simply start using the [efn_note]Footnote content goes here.[/efn_note] shortcode within your posts.
 
 == Frequently Asked Questions ==
 
 = How do I insert a footnote into my post. =
 
-Simply use the shortcode [note]Footnote content goes here[/note] and Easy Footnotes will enter numeric footnotes into your post that open on hover and take the user to the footnote at the bottom of the page on click.
+Simply use the shortcode [efn_note]Footnote content goes here[/efn_note] and Easy Footnotes will enter numeric footnotes into your post that open on hover and take the user to the footnote at the bottom of the page on click.
 
 = That's awesome! =
 
@@ -38,18 +38,16 @@ I know, but that's not really a question.
 
 Because it's easy. And it's integrated with the qTip2 jQuery plugin to display your footnotes in lovely tooltips on hover. Plus it automatically numbers your footnotes in the order you enter them into your post.
 
-= Any plans for the future? =
+= How can I change the markup for the footnote label? =
 
-Yeah, I'll be integrating more of qTip's options for displaying the tooltips. Give users the ability to set their own icons and labels. And much more as I get user feedback.
+Just use the `efn_footnote_label` filter in your functions.php to edit the output.
 
-= That sounds great, but I was thinking more personally. You know, are you up to anything tonight? Want to grab some pizza? =
-
-How did you even get in here?
-
-= It's cool I'll let myself out. One last question though. Any advice on filling up a new plugins FAQ section? =
-
-Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Maecenas faucibus mollis interdum.
-
+<pre>
+function efn_change_label_markup( $output, $label ) {
+    return '<h5>' . $label . '</h5>';
+}
+add_filter( 'efn_footnote_label', 'change_efn_label', 10, 2 );
+</pre>
 
 == Screenshots ==
 
@@ -62,7 +60,8 @@ Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere 
 * Improved accessibility for keyboard navigation of footnotes
 * Started improving code to follow WordPress Coding Standards guidelines
 * Added second option for footnotes using `[efn_note]` to phase out non-prefixed `[note]`
-* Added ‘easy_footnote’ hook to filter footnotes
+* Added `easy_footnote_label` hook to filter footnote labels
+* Added `before_footnote` and `after_footnote` filters to add content before or after footnote lists after content.
 
 = 1.0.16 =
 * Fixing footnote counts for the last time! (Hopefully)

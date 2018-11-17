@@ -102,8 +102,8 @@ class easyFootnotes {
 			array(
 				// Future home of shortcode atts.
 			),
-			$atts,
-		)
+			$atts
+		);
 
 		$post_id = get_the_ID();
 
