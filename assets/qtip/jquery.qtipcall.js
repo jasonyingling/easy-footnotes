@@ -12,7 +12,10 @@ jQuery(document).ready(function($){
 	    hide: {
             fixed: true,
             delay: 400,
-            event: 'unfocus mouseleave'
-        }
+            event: 'unfocus blur mouseleave'
+		},
+		show: {
+			event: 'focus mouseenter'
+		}
 	});
 });
