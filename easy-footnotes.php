@@ -85,7 +85,7 @@ class easyFootnotes {
 	 * @param string $content Content within the shortcode.
 	 */
 	public function easy_footnote_shortcode( $atts, $content = null ) {
-		if ( $this->footnoteOptions['show_easy_footnote_on_front'] ) {
+		if ( isset( $this->footnoteOptions['show_easy_footnote_on_front'] ) && $this->footnoteOptions['show_easy_footnote_on_front'] ) {
 			$efn_show_on_front = is_front_page();
 		} else {
 			$efn_show_on_front = false;
@@ -147,11 +147,11 @@ class easyFootnotes {
 	 * @param string $content The content of the current post.
 	 */
 	public function easy_footnote_after_content( $content ) {
-		if ( $this->footnoteOptions['hide_easy_footnote_after_posts'] ) {
+		if ( isset( $this->footnoteOptions['hide_easy_footnote_after_posts'] ) && $this->footnoteOptions['hide_easy_footnote_after_posts'] ) {
 			return $content;
 		}
 
-		if ( $this->footnoteOptions['show_easy_footnote_on_front'] ) {
+		if ( isset( $this->footnoteOptions['show_easy_footnote_on_front'] ) && $this->footnoteOptions['show_easy_footnote_on_front'] ) {
 			$efn_show_on_front = is_front_page();
 		} else {
 			$efn_show_on_front = false;
