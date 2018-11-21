@@ -172,16 +172,16 @@ class easyFootnotes {
 			}
 			if ( ! empty( $footnotesInsert ) ) {
 				if ( true === $useLabel ) {
-					$footnote_label = '<h4>' . esc_html( $efLabel ) . '</h4>';
-					// Filter for editing footnote label markup and output.
-					$footnote_label = apply_filters( 'efn_footnote_label', $footnote_label, $efLabel );
-
-					$content .= sprintf(
-						'<div class="easy-footnote-title">
-							%s
-						</div>',
-						$footnote_label
+					$footnote_label = array(
+						'<div class="easy-footnote-title">',
+							'<h4>',
+								esc_html( $efLabel ),
+							'</h4>',
+						'</div>'
 					);
+
+					// Filter for editing footnote label markup and output.
+					$content .= apply_filters( 'efn_footnote_label', implode("", $footnote_label), $efLabel );
 				}
 
 				$footnote_content = '';
