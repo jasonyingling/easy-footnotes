@@ -1,5 +1,6 @@
 jQuery(document).ready(function($){
 	$('.easy-footnote a').qtip({
+		prerender: true,
 		position: {
 	        my: 'top center',  // Position my top left...
 	        at: 'bottom center', // at the bottom right of...
@@ -11,7 +12,10 @@ jQuery(document).ready(function($){
 	    hide: {
             fixed: true,
             delay: 400,
-            event: 'unfocus mouseleave'
-        }
+            event: 'unfocus blur mouseleave'
+		},
+		show: {
+			event: 'focus mouseenter'
+		}
 	});
 });
