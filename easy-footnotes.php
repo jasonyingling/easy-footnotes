@@ -175,7 +175,7 @@ class easyFootnotes {
 			if ( ! empty( $footnotesInsert ) ) {
 				if ( true === $useLabel ) {
 					if ($efCustomLabelMarkup) {
-                        $content .= str_replace('{{label}}', $efLabel, $efCustomLabelMarkup);
+                        $content .= str_replace('{{label}}', esc_html($efLabel), $efCustomLabelMarkup);
                     } else {
 						$footnote_label = '<h4>' . esc_html( $efLabel ) . '</h4>';
 						// Filter for editing footnote label markup and output.
