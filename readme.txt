@@ -4,7 +4,7 @@ Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
 Tested up to: 5.0
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,10 +43,10 @@ Because it's easy. And it's integrated with the qTip2 jQuery plugin to display y
 Just use the `efn_footnote_label` filter in your functions.php to edit the output.
 
 <pre>
-function efn_change_label_markup( $output, $label ) {
+<code>function efn_change_label_markup( $output, $label ) {
     return '<h5>' . $label . '</h5>';
 }
-add_filter( 'efn_footnote_label', 'change_efn_label', 10, 2 );
+add_filter( 'efn_footnote_label', 'change_efn_label', 10, 2 );</code>
 </pre>
 
 == Screenshots ==
@@ -55,6 +55,10 @@ add_filter( 'efn_footnote_label', 'change_efn_label', 10, 2 );
 2. Several footnotes (feetnote?) at the bottom of the post.
 
 == Changelog ==
+
+= 1.1.1 =
+* Added `efn_footnote_list_output` filter for editing entire Easy Footnote output after content
+* Updating SVN to include missing JS file
 
 = 1.1.0 =
 * Improved accessibility for keyboard navigation of footnotes
