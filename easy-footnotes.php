@@ -3,7 +3,7 @@
  * Plugin Name: Easy Footnotes
  * Plugin URI: https://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
- * Version: 1.1.2
+ * Version: 1.1.3
  * Author: Jason Yingling
  * Author URI: https://jasonyingling.me
  * License: GPL2
@@ -173,16 +173,11 @@ class easyFootnotes {
 			}
 			if ( ! empty( $footnotesInsert ) ) {
 				if ( true === $useLabel ) {
-					$footnote_label = '<h4>' . esc_html( $efLabel ) . '</h4>';
+					$footnote_label = '<div class="easy-footnote-title"><h4>' . esc_html( $efLabel ) . '</h4></div>';
 					// Filter for editing footnote label markup and output.
 					$footnote_label = apply_filters( 'efn_footnote_label', $footnote_label, $efLabel );
 
-					$efn_output .= sprintf(
-						'<div class="easy-footnote-title">
-							%s
-						</div>',
-						$footnote_label
-					);
+					$efn_output .= $footnote_label;
 				}
 
 				$footnote_content = '';
