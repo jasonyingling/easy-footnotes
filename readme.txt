@@ -4,7 +4,7 @@ Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
 Tested up to: 5.0
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,11 @@ add_filter( 'efn_footnote_label', 'change_efn_label', 10, 2 );</code>
 2. Several footnotes (feetnote?) at the bottom of the post.
 
 == Changelog ==
+
+= 1.1.2 =
+* Fixed issue with default settings not being set on new installations
+* Added conditional logic check if settings exist to avoid PHP Warnings
+* Fixed undefined index of $efn_output when not using Easy Footnotes label
 
 = 1.1.1 =
 * Added `efn_footnote_list_output` filter for editing entire Easy Footnote output after content

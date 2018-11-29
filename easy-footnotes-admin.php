@@ -49,10 +49,10 @@ if ( isset( $_POST['easy_footnote_hidden'] ) ) {
 	endif;
 } else {
 	// Normal page display.
-	$easyFootnoteLabel              = $footnoteOptions['footnoteLabel'];
-	$easyFootnoteCheck              = $footnoteOptions['useLabel'];
-	$hide_easy_footnote_after_posts = $footnoteOptions['hide_easy_footnote_after_posts'];
-	$show_easy_footnote_on_front    = $footnoteOptions['show_easy_footnote_on_front'];
+	$easyFootnoteLabel              = isset( $footnoteOptions['footnoteLabel'] ) ? $footnoteOptions['footnoteLabel'] : __( 'Footnotes', 'easy-footnotes' );
+	$easyFootnoteCheck              = isset( $footnoteOptions['useLabel'] ) ? $footnoteOptions['useLabel'] : false;
+	$hide_easy_footnote_after_posts = isset( $footnoteOptions['hide_easy_footnote_after_posts'] ) ? $footnoteOptions['hide_easy_footnote_after_posts'] : false;
+	$show_easy_footnote_on_front    = isset( $footnoteOptions['show_easy_footnote_on_front'] ) ? $footnoteOptions['show_easy_footnote_on_front'] : false;
 }
 ?>
 

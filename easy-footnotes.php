@@ -3,7 +3,7 @@
  * Plugin Name: Easy Footnotes
  * Plugin URI: https://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: Jason Yingling
  * Author URI: https://jasonyingling.me
  * License: GPL2
@@ -48,7 +48,7 @@ class easyFootnotes {
 	 * Constructing the initial plugin options, shortcodes, and hooks.
 	 */
 	public function __construct() {
-		$footnoteSettings = array(
+		$this->footnoteSettings = array(
 			'footnoteLabel'                  => __( 'Footnotes', 'easy-footnotes' ),
 			'useLabel'                       => false,
 			'hide_easy_footnote_after_posts' => false,
@@ -161,9 +161,10 @@ class easyFootnotes {
 			$footnotesInsert = $this->footnotes;
 
 			$footnoteCopy = '';
+			$efn_output = '';
 
-			$useLabel = $this->footnoteOptions['useLabel'];
-			$efLabel  = $this->footnoteOptions['footnoteLabel'];
+			$useLabel = isset( $this->footnoteOptions['useLabel'] ) ? $this->footnoteOptions['useLabel'] : false;
+			$efLabel  = isset($this->footnoteOptions['footnoteLabel'] ) ? $this->footnoteOptions['footnoteLabel'] : __( 'Footnotes', 'easy-footnotes' );
 
 			$post_id = get_the_ID();
 
@@ -176,7 +177,7 @@ class easyFootnotes {
 					// Filter for editing footnote label markup and output.
 					$footnote_label = apply_filters( 'efn_footnote_label', $footnote_label, $efLabel );
 
-					$efn_output = sprintf(
+					$efn_output .= sprintf(
 						'<div class="easy-footnote-title">
 							%s
 						</div>',
