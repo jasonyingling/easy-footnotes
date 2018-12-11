@@ -4,7 +4,7 @@ Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
 Tested up to: 5.0
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,7 +46,21 @@ Just use the `efn_footnote_label` filter in your functions.php to edit the outpu
 <code>function efn_change_label_markup( $output, $label ) {
     return '<h5>' . $label . '</h5>';
 }
-add_filter( 'efn_footnote_label', 'change_efn_label', 10, 2 );</code>
+add_filter( 'efn_footnote_label', 'efn_change_label_markup', 10, 2 );</code>
+</pre>
+
+= Can I disable the qTip functionality? =
+
+Place the following code in your functions.php file to disable the qTip features.
+
+<pre>
+<code>function efn_deregister_scripts() {
+	wp_deregister_style( 'qtipstyles' );
+	wp_deregister_script( 'imagesloaded' );
+	wp_deregister_script( 'qtip' );
+	wp_deregister_script( 'qtipcall' );
+}
+add_action( 'wp_enqueue_scripts', 'efn_deregister_scripts' );</code>
 </pre>
 
 == Screenshots ==
@@ -55,6 +69,12 @@ add_filter( 'efn_footnote_label', 'change_efn_label', 10, 2 );</code>
 2. Several footnotes (feetnote?) at the bottom of the post.
 
 == Changelog ==
+
+= 1.1.4 =
+* Fixing typo on FAQ page
+
+= 1.1.3 =
+* Adding div.easy-footnote-title into $footnote_label for filtering with `efn_footnote_label`
 
 = 1.1.2 =
 * Fixed issue with default settings not being set on new installations
@@ -125,59 +145,3 @@ add_filter( 'efn_footnote_label', 'change_efn_label', 10, 2 );</code>
 
 = 1.0.0 =
 * Initial release
-
-== Upgrade Notice ==
-
-= 1.0.0 =
-Initial release
-
-= 1.0.1 =
-Footnotes now stay open when moused over. Allows for adding links into footnotes.
-
-= 1.0.2 =
-I messed up the version tag on 1.0.1. Just upping it 1.0.2 for precautions.
-
-= 1.0.3 =
-Added a 400ms delay to the footnote closing via qTip. This allows the footnote to stay open better when mousing into for access to links.
-
-= 1.0.4 =
-Fixed bug where footnotes were being appended to the end of the content on home pages and ignoring the more tag
-
-= 1.0.5 =
-Updated logic for appending footnotes to the bottom of single posts and pages. Now using is_singular and is_main_query as opposed to just is_single. This allows for appending posts to the bottom of posts, custom post types, and pages. Also fixed logic for numbering posts on the home page when showing multiple posts. Footnotes outside of the single post also now link to the footnote within the single post.
-
-= 1.0.6 =
-Added the ability to insert a title above the footnote section at the bottom of the post content. This is controlled in the Easy Footnotes Settings page that can be found under Settings in the WordPress Dashboard.
-
-= 1.0.7 =
-Fixed issue where Footnote title was showing on pages without any footnotes once activated through the settings. Also changed the priority of the add_filter('the_content') call to be 20 in order to show above Jetpack Related Posts
-
-= 1.0.8 =
-Improved footnote usability on touch devices.
-
-= 1.0.9 =
-Fixed issue causing notice of undefined index on admin screen. Adjustment to how footnote's handle html special chars.
-
-= 1.0.10 =
-Sanitizing inputs
-
-= 1.0.11 =
-Fixed bug to prevent tooltips from opening off the screen
-
-= 1.0.12 =
-Changing how footnotes are numbered to avoid duplicates caused by `the_content` filtering being applied earlier in themes.
-
-= 1.0.13 =
-Fixing PHP notice on shortcode when content not found
-
-= 1.0.14 =
-CSS tweak in admin screen
-
-= 1.0.15 =
-Being a noob and not testing a link added in on settings page. It works now.
-
-= 1.0.16 =
-* Fixing footnote counts for the last time! (Hopefully)
-* Added post ID to footnote IDs to make them more unique
-* New setting to hide the footnotes after content in Settings > Easy Footnotes
-* Prep for a bigger update and beginning Gutenberg support
