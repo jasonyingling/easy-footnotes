@@ -3,8 +3,8 @@ Contributors: yingling017, twinpictures
 Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
-Tested up to: 5.0
-Stable tag: 1.1.4
+Tested up to: 5.5
+Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,6 +69,9 @@ add_action( 'wp_enqueue_scripts', 'efn_deregister_scripts' );</code>
 2. Several footnotes (feetnote?) at the bottom of the post.
 
 == Changelog ==
+
+= 1.1.5 =
+* WordPress 5.5 compatability
 
 = 1.1.4 =
 * Fixing typo on FAQ page
