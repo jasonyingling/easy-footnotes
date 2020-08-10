@@ -13,28 +13,13 @@ if ( isset( $_POST['easy_footnote_hidden'] ) ) {
 
 	if ( 'Y' === $_POST['easy_footnote_hidden'] ) :
 		// Form data sent.
-		$easyFootnoteLabel = ( isset( $_POST['easy_footnotes_label'] ) ) ? sanitize_text_field( wp_unslash( $_POST['easy_footnotes_label'] ) ) : '';
-
-		if ( isset( $_POST['easy_footnote_check'] ) ) {
-			$easyFootnoteCheck = true;
-		} else {
-			$easyFootnoteCheck = false;
-		}
-
-		if ( isset( $_POST['hide_easy_footnote_after_posts'] ) ) {
-			$hide_easy_footnote_after_posts = true;
-		} else {
-			$hide_easy_footnote_after_posts = false;
-		}
-
-		if ( isset( $_POST['show_easy_footnote_on_front'] ) ) {
-			$show_easy_footnote_on_front = true;
-		} else {
-			$show_easy_footnote_on_front = false;
-		}
+		$easyFootnoteLabel              = ( isset( $_POST['easy_footnotes_label'] ) ) ? sanitize_text_field( wp_unslash( $_POST['easy_footnotes_label'] ) ) : '';
+		$easyFootnoteCheck              = isset( $_POST['easy_footnote_check'] ) ? true : false;
+		$hide_easy_footnote_after_posts = isset( $_POST['hide_easy_footnote_after_posts'] ) ? true : false;
+		$show_easy_footnote_on_front    = isset( $_POST['show_easy_footnote_on_front'] ) ? true : false;
 
 		$updateOptions = array(
-			'footnoteLabel'                  => $easyFootnoteLabel,
+			'footnoteLabel'                  => sanitize_text_field( $easyFootnoteLabel ),
 			'useLabel'                       => $easyFootnoteCheck,
 			'hide_easy_footnote_after_posts' => $hide_easy_footnote_after_posts,
 			'show_easy_footnote_on_front'    => $show_easy_footnote_on_front,
@@ -49,7 +34,7 @@ if ( isset( $_POST['easy_footnote_hidden'] ) ) {
 	endif;
 } else {
 	// Normal page display.
-	$easyFootnoteLabel              = isset( $footnoteOptions['footnoteLabel'] ) ? $footnoteOptions['footnoteLabel'] : __( 'Footnotes', 'easy-footnotes' );
+	$easyFootnoteLabel              = isset( $footnoteOptions['footnoteLabel'] ) ? esc_html( $footnoteOptions['footnoteLabel'] ) : __( 'Footnotes', 'easy-footnotes' );
 	$easyFootnoteCheck              = isset( $footnoteOptions['useLabel'] ) ? $footnoteOptions['useLabel'] : false;
 	$hide_easy_footnote_after_posts = isset( $footnoteOptions['hide_easy_footnote_after_posts'] ) ? $footnoteOptions['hide_easy_footnote_after_posts'] : false;
 	$show_easy_footnote_on_front    = isset( $footnoteOptions['show_easy_footnote_on_front'] ) ? $footnoteOptions['show_easy_footnote_on_front'] : false;
