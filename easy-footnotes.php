@@ -3,7 +3,7 @@
  * Plugin Name: Easy Footnotes
  * Plugin URI: https://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
- * Version: 1.1.5
+ * Version: 1.1.6
  * Author: Jason Yingling
  * Author URI: https://jasonyingling.me
  * License: GPL2

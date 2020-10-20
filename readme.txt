@@ -70,6 +70,9 @@ add_action( 'wp_enqueue_scripts', 'efn_deregister_scripts' );</code>
 
 == Changelog ==
 
+= 1.1.6 =
+* Removing themes.pizza references
+
 = 1.1.5 =
 * WordPress 5.5 compatability
 
