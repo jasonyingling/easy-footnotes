@@ -58,6 +58,7 @@ class easyFootnotes {
 		add_option( 'easy_footnotes_options', $this->footnoteSettings );
 		add_shortcode( 'note', array( $this, 'easy_footnote_shortcode' ) );
 		add_shortcode( 'efn_note', array( $this, 'easy_footnote_shortcode' ) );
+		add_shortcode( 'efn_reset', array( $this, 'short_code_reset' ) );
 		add_filter( 'the_content', array( $this, 'easy_footnote_after_content' ), 20 );
 		add_filter( 'the_content', array( $this, 'easy_footnote_reset' ), 999 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_qtip_scripts' ) );
@@ -241,6 +242,15 @@ class easyFootnotes {
 		wp_enqueue_style( 'easy-footnotes-admin-styles', plugins_url( '/assets/easy-footnotes-admin.css', __FILE__ ), '', '1.0.13' );
 		wp_enqueue_script( 'easy-footnotes-admin-scripts', plugins_url( '/assets/js/easy-footnotes-admin.js', __FILE__ ), array( 'jquery' ), '1.0.1', true );
 	}
+	
+	/**
+	 * Manually reset footnotes and counter
+	 */
+	public function short_code_reset() {
+		$this->footnoteCount = 0;
+		$this->footnotes = array();
+		return "";
+	}	
 }
 
 $easyFootnotes = new easyFootnotes();
