@@ -3,8 +3,8 @@ Contributors: yingling017, twinpictures
 Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
-Tested up to: 5.5
-Stable tag: 1.1.5
+Tested up to: 6.0.2
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,8 @@ add_action( 'wp_enqueue_scripts', 'efn_deregister_scripts' );</code>
 
 = 1.1.6 =
 * Removing themes.pizza references
+* WordPress 6.0.2 support
+* PHP 8.0 support
 
 = 1.1.5 =
 * WordPress 5.5 compatability
