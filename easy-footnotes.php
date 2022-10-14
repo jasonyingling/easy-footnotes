@@ -65,6 +65,7 @@ class easyFootnotes {
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_qtip_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'easy_footnotes_admin_actions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'easy_footnotes_admin_scripts' ) );
+		add_action( 'plugins_loaded', array($this, 'plugin_textdomain') );
 
 		$this->footnoteOptions = get_option( 'easy_footnotes_options' );
 
@@ -244,6 +245,14 @@ class easyFootnotes {
 	public function easy_footnotes_admin_scripts() {
 		wp_enqueue_style( 'easy-footnotes-admin-styles', plugins_url( '/assets/easy-footnotes-admin.css', __FILE__ ), '', $this->version );
 		wp_enqueue_script( 'easy-footnotes-admin-scripts', plugins_url( '/assets/js/easy-footnotes-admin.js', __FILE__ ), array( 'jquery' ), $this->version, true );
+	}
+
+	/**
+	 * Load plugin textdomain easy-footnotes
+	 */
+	public plugin_textdomain() {
+		load_plugin_textdomain( 'easy-footnotes', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' ); 
+}
 	}
 }
 
