@@ -58,7 +58,7 @@ if ( isset( $_POST['easy_footnote_hidden'] ) ) {
 		<p id="easy_footnote_on_front"><?php esc_html_e( 'Show Footnotes on Front Page: ', 'easy-footnotes' ); ?><input type="checkbox" name="show_easy_footnote_on_front" <?php checked( $show_easy_footnote_on_front ); ?> size="20"></p>
 
 		<p class="submit">
-		<input type="submit" name="Submit" value="<?php esc_attr_e( 'Update Options', 'easy_footnotes_trdom' ); ?>" />
+		<input type="submit" name="Submit" value="<?php esc_attr_e( 'Update Options', 'easy-footnotes' ); ?>" />
 		</p>
 	</form>
 
