@@ -13,6 +13,7 @@ Easy Footnotes lets you quickly and easily add footnotes throughout your WordPre
 == Description ==
 
 Easy Footnotes lets you add footnotes throughout your WordPress posts by using the shortcode [efn_note]Footnote content.[/efn_note]. Easy Footnotes will automatically add the number of the footnote where the shortcode was entered and add the full footnote text to the bottom of your post in an ordered list with a corresponding number.
+If you wish to start the footnote from a custom number on a particular post, e.g. 7, simply add the code <!--startnum=7--> at the top of your post.
 
 Hovering the footnote label will show the user the full text of the footnote using the jQuery Qtip2 plugin. Clicking on the footnote label will take the user down the page to the corresponding footnote at the bottom of the WordPress post. Each footnote at the bottom of the post has a icon that can be clicked to return to that particular footnote within the post copy.
 

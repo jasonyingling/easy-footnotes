@@ -59,7 +59,7 @@ class easyFootnotes {
 		add_shortcode( 'note', array( $this, 'easy_footnote_shortcode' ) );
 		add_shortcode( 'efn_note', array( $this, 'easy_footnote_shortcode' ) );
 		add_filter( 'the_content', array( $this, 'easy_footnote_after_content' ), 20 );
-		add_filter( 'the_content', array( $this, 'easy_footnote_reset' ), 999 );
+		add_filter( 'the_content', array( $this, 'easy_footnote_reset' ), -10 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_qtip_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'easy_footnotes_admin_actions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'easy_footnotes_admin_scripts' ) );
@@ -168,6 +168,11 @@ class easyFootnotes {
 
 			$post_id = get_the_ID();
 
+			$ppost = get_post($post_id);
+			$pcontent = $ppost->post_content;
+			$start_number = ( 1 === preg_match( "|<!\-\-startnum=(\d+)\-\->|", $pcontent,$start_number_array ) ) ? $start_number_array[ 1 ] : 1;
+			$number_label = $start_number;
+
 			foreach ( $footnotesInsert as $count => $footnote ) {
 				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-' .esc_attr( $count ) . '-' . $post_id . '" class="easy-footnote-margin-adjust"></span>' . wp_kses_post( $footnote ) . '<a class="easy-footnote-to-top" href="' . esc_url( '#easy-footnote-' . $count . '-' . $post_id ) . '"></a></li>';
 			}
@@ -207,8 +212,11 @@ class easyFootnotes {
 	 * @param string $content The content of the post from the_content filter.
 	 */
 	public function easy_footnote_reset( $content ) {
-		$this->footnoteCount = 0;
-
+		$post = get_post($post_id);
+		$pcontent = $post->post_content;
+		$start_number = ( 1 === preg_match( "|<!\-\-startnum=(\d+)\-\->|", $content,$start_number_array ) ) ? $start_number_array[ 1 ] : 1;
+		$this->footnoteCount = $start_number - 1; //$this->footnoteCount;
+		
 		$this->footnotes = array();
 
 		return $content;
