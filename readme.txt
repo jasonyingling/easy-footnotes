@@ -3,8 +3,8 @@ Contributors: yingling017, twinpictures
 Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
-Tested up to: 6.0.2
-Stable tag: 1.1.7
+Tested up to: 6.6.2
+Stable tag: 1.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,7 +70,7 @@ add_action( 'wp_enqueue_scripts', 'efn_deregister_scripts' );</code>
 
 == Changelog ==
 
-= 1.1.7 =
+= 1.1.8 =
 * WordPress 6.6 support
 
 = 1.1.6 =
