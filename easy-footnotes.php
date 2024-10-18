@@ -42,6 +42,7 @@ class easyFootnotes {
 	public $prevPost;
 	public $footnoteOptions;
 	public $footnoteLookup = array();
+	public $usedFootnoteNumbers = array();
 
 	private $footnoteSettings;
 
@@ -99,9 +100,10 @@ class easyFootnotes {
 		wp_enqueue_script( 'qtipcall' );
 		wp_enqueue_style( 'dashicons' );
 
+		// Accept optional custom number attribute
 		$atts = shortcode_atts(
 			array(
-				// Future home of shortcode atts.
+				'num' => null
 			),
 			$atts
 		);
@@ -114,24 +116,34 @@ class easyFootnotes {
 		 * Search for existing footnote for removing duplicate
 		 * Also add the same numbers to duplicate footnotes
 		 */
-		// Use associative array for faster lookup
+		if (!isset($this->usedFootnoteNumbers)) {
+			$this->usedFootnoteNumbers = array();
+		}
 		if (!isset($this->footnoteLookup)) {
 			$this->footnoteLookup = array();
 		}
-	
-		// Check if this footnote content already exists
-		if (isset($this->footnoteLookup[$content])) {
+
+		// If a custom number is provided, use that number and mark it as used
+		if ( ! empty( $atts['num'] ) ) {
+			$footnote_number = intval( $atts['num'] );
+			$this->usedFootnoteNumbers[] = $footnote_number; // Track custom number
+			$this->footnoteLookup[$content] = $footnote_number;
+			$this->footnotes[$footnote_number] = $content;
+		} elseif ( isset( $this->footnoteLookup[$content] ) ) {
+			// Use existing footnote number for duplicate content
 			$footnote_number = $this->footnoteLookup[$content];
 		} else {
-			// Increment the counter for a new footnote
-			$this->footnotes[] = $content;
-			$this->footnoteCount++;
+			// Auto-increment for new footnotes, skipping used numbers
+			do {
+				$this->footnoteCount++;
+			} while ( in_array( $this->footnoteCount, $this->usedFootnoteNumbers ) );
+	
 			$footnote_number = $this->footnoteCount;
-	
-			// Add the footnote content to the lookup array
 			$this->footnoteLookup[$content] = $footnote_number;
+			$this->usedFootnoteNumbers[] = $footnote_number; // Mark as used
+			$this->footnotes[$footnote_number] = $content;
 		}
-	
+
 		// Generate the correct footnote link with the correct number
 		$footnoteLink = (is_singular() || $efn_show_on_front) && is_main_query() 
 			? '#easy-footnote-bottom-' . $footnote_number . '-' . $post_id 
@@ -185,22 +197,24 @@ class easyFootnotes {
 			$post_id = get_the_ID();
 
 			// Create a new array to track used footnotes and their numbers
-			$footnoteLookup = array();
 			$footnote_number = 1;
 
+			// sort footnotes according to numbers
+			ksort($footnotesInsert);
+
 			foreach ( $footnotesInsert as $count => $footnote ) {
-				// Check if the footnote is already in the lookup table
-				if ( ! isset( $footnoteLookup[ $footnote ] ) ) {
-					// If not, assign the current number and store it
-					$footnoteLookup[ $footnote ] = $footnote_number;
-					$footnote_number++;
+				// If the footnote is already in the lookup, use its number
+				if ( isset( $this->footnoteLookup[$footnote] ) ) {
+					$count = $this->footnoteLookup[$footnote];
+				} else {
+					// Skip custom numbers that were already used
+					while ( in_array( $footnote_number, $this->usedFootnoteNumbers ) ) {
+						$footnote_number++;
+					}
 				}
 	
-				// Get the footnote number from the lookup array
-				$count = $footnoteLookup[ $footnote ];
-	
-				// Generate the correct back-to-top link and the footnote item
-				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-' .esc_attr( $count ) . '-' . $post_id . '" class="easy-footnote-margin-adjust"></span>' . wp_kses_post( $footnote ) . '<a class="easy-footnote-to-top" href="' . esc_url( '#easy-footnote-' . $count . '-' . $post_id ) . '"></a></li>';
+				// Generate back-to-top link and the footnote item
+				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-' . esc_attr( $count ) . '-' . $post_id . '" class="easy-footnote-margin-adjust"></span>' . wp_kses_post( $footnote ) . '<a class="easy-footnote-to-top" href="' . esc_url( '#easy-footnote-' . $count . '-' . $post_id ) . '"></a></li>';
 			}
 			if ( ! empty( $footnotesInsert ) ) {
 				if ( true === $useLabel ) {
