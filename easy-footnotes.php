@@ -46,7 +46,7 @@ class easyFootnotes {
 
 	private $footnoteSettings;
 
-	private $version;
+	private $version = '1.1.9';
 
 	/**
 	 * Constructing the initial plugin options, shortcodes, and hooks.
@@ -68,11 +68,9 @@ class easyFootnotes {
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_qtip_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'easy_footnotes_admin_actions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'easy_footnotes_admin_scripts' ) );
-		add_action( 'plugins_loaded', array($this, 'plugin_textdomain') );
+		add_action( 'init', array($this, 'efn_load_textdomain') );
 
 		$this->footnoteOptions = get_option( 'easy_footnotes_options' );
-
-		$this->$version = '1.1.6';
 	}
 
 	/**
@@ -298,9 +296,8 @@ class easyFootnotes {
 	/**
 	 * Load plugin textdomain easy-footnotes
 	 */
-	public plugin_textdomain() {
+	public function efn_load_textdomain() {
 		load_plugin_textdomain( 'easy-footnotes', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' ); 
-}
 	}
 }
 
