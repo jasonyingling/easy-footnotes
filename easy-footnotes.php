@@ -41,6 +41,8 @@ class easyFootnotes {
 	public $footnoteCount = 0;
 	public $prevPost;
 	public $footnoteOptions;
+	public $footnoteLookup = array();
+	public $usedFootnoteNumbers = array();
 
 	private $footnoteSettings;
 
@@ -99,9 +101,10 @@ class easyFootnotes {
 		wp_enqueue_script( 'qtipcall' );
 		wp_enqueue_style( 'dashicons' );
 
+		// Accept optional custom number attribute
 		$atts = shortcode_atts(
 			array(
-				// Future home of shortcode atts.
+				'num' => null
 			),
 			$atts
 		);
@@ -109,25 +112,52 @@ class easyFootnotes {
 		$post_id = get_the_ID();
 
 		$content = do_shortcode( $content );
+		
+		$content_id = md5( preg_replace("/[^A-Za-z0-9 ]/", '', wp_strip_all_tags( html_entity_decode( $content ) ) ) );
 
-		$count = $this->footnoteCount;
-
-		// Increment the counter.
-		$count++;
-
-		// Set the footnoteCount (This whole process needs reworked).
-		$this->footnoteCount = $count;
-
-		$this->easy_footnote_content( $content );
-
-		if ( ( is_singular() || $efn_show_on_front ) && is_main_query() ) {
-			$footnoteLink = '#easy-footnote-bottom-' . $this->footnoteCount . '-' . $post_id;
-		} else {
-			$footnoteLink = get_permalink( get_the_ID() ) . '#easy-footnote-bottom-' . $this->footnoteCount . '-' . $post_id;
+		/**
+		 * Search for existing footnote for removing duplicate
+		 * Also add the same numbers to duplicate footnotes
+		 */
+		if (!isset($this->usedFootnoteNumbers)) {
+			$this->usedFootnoteNumbers = array();
+		}
+		if (!isset($this->footnoteLookup)) {
+			$this->footnoteLookup = array();
 		}
 
-		$footnoteContent = "<span id='easy-footnote-" . esc_attr( $this->footnoteCount ) . '-' . $post_id . "' class='easy-footnote-margin-adjust'></span><span class='easy-footnote'><a href='" . esc_url( $footnoteLink ) . "' title='" . htmlspecialchars( $content, ENT_QUOTES ) . "'><sup>" . esc_html( $this->footnoteCount ) . "</sup></a></span>";
+		// If a custom number is provided, use that number and mark it as used
+		if ( ! empty( $atts['num'] ) ) {
+			$footnote_number = intval( $atts['num'] );
+			$this->usedFootnoteNumbers[] = $footnote_number; // Track custom number
+			$this->footnoteLookup[$content_id] = $footnote_number;
+			$this->footnotes[$footnote_number] = $content;
+		} elseif ( isset( $this->footnoteLookup[$content_id] ) ) {
+			// Use existing footnote number for duplicate content
+			$footnote_number = $this->footnoteLookup[$content_id];
+		} else {
+			// Auto-increment for new footnotes, skipping used numbers
+			do {
+				$this->footnoteCount++;
+			} while ( in_array( $this->footnoteCount, $this->usedFootnoteNumbers ) );
+	
+			$footnote_number = $this->footnoteCount;
+			$this->footnoteLookup[$content_id] = $footnote_number;
+			$this->usedFootnoteNumbers[] = $footnote_number; // Mark as used
+			$this->footnotes[$footnote_number] = $content;
+		}
 
+		// Generate the correct footnote link with the correct number
+		$footnoteLink = (is_singular() || $efn_show_on_front) && is_main_query() 
+			? '#easy-footnote-bottom-' . $footnote_number . '-' . $post_id 
+			: get_permalink($post_id) . '#easy-footnote-bottom-' . $footnote_number . '-' . $post_id;
+	
+		// Now generate the footnote markup with the correct number and link
+		$footnoteContent = "<span id='easy-footnote-" . esc_attr($footnote_number) . '-' . $post_id 
+			. "' class='easy-footnote-margin-adjust'></span><span class='easy-footnote'>"
+			. "<a href='" . esc_url($footnoteLink) . "' title='" . htmlspecialchars($content, ENT_QUOTES) 
+			. "'><sup>" . esc_html($footnote_number) . "</sup></a></span>";
+	
 		return $footnoteContent;
 	}
 
@@ -169,8 +199,25 @@ class easyFootnotes {
 
 			$post_id = get_the_ID();
 
+			// Create a new array to track used footnotes and their numbers
+			$footnote_number = 1;
+
+			// sort footnotes according to numbers
+			ksort($footnotesInsert);
+
 			foreach ( $footnotesInsert as $count => $footnote ) {
-				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-' .esc_attr( $count ) . '-' . $post_id . '" class="easy-footnote-margin-adjust"></span>' . wp_kses_post( $footnote ) . '<a class="easy-footnote-to-top" href="' . esc_url( '#easy-footnote-' . $count . '-' . $post_id ) . '"></a></li>';
+				// If the footnote is already in the lookup, use its number
+				if ( isset( $this->footnoteLookup[$footnote] ) ) {
+					$count = $this->footnoteLookup[$footnote];
+				} else {
+					// Skip custom numbers that were already used
+					while ( in_array( $footnote_number, $this->usedFootnoteNumbers ) ) {
+						$footnote_number++;
+					}
+				}
+	
+				// Generate back-to-top link and the footnote item
+				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-' . esc_attr( $count ) . '-' . $post_id . '" class="easy-footnote-margin-adjust"></span>' . wp_kses_post( $footnote ) . '<a class="easy-footnote-to-top" href="' . esc_url( '#easy-footnote-' . $count . '-' . $post_id ) . '"></a></li>';
 			}
 			if ( ! empty( $footnotesInsert ) ) {
 				if ( true === $useLabel ) {
