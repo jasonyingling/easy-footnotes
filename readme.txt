@@ -73,6 +73,7 @@ add_action( 'wp_enqueue_scripts', 'efn_deregister_scripts' );</code>
 = 1.1.9 =
 * Adds support for duplicate footnotes using the same number
 * Fixes a bug with multiple footnotes showing at the bottom when do_shortcode() is run on the_content outside the main loop.
+* Add better i18n support for the plugin
 
 = 1.1.8 =
 * WordPress 6.6 support
