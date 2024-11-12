@@ -60,6 +60,7 @@ class easyFootnotes {
 		add_shortcode( 'efn_note', array( $this, 'easy_footnote_shortcode' ) );
 		add_filter( 'the_content', array( $this, 'easy_footnote_after_content' ), 20 );
 		add_filter( 'the_content', array( $this, 'easy_footnote_reset' ), 999 );
+		
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_qtip_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'easy_footnotes_admin_actions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'easy_footnotes_admin_scripts' ) );
