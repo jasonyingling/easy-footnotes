@@ -63,6 +63,7 @@ class easyFootnotes {
 		add_option( 'easy_footnotes_options', $this->footnoteSettings );
 		add_shortcode( 'note', array( $this, 'easy_footnote_shortcode' ) );
 		add_shortcode( 'efn_note', array( $this, 'easy_footnote_shortcode' ) );
+		add_shortcode( 'efn_reset', array( $this, 'short_code_reset' ) );
 		add_filter( 'the_content', array( $this, 'easy_footnote_after_content' ), 20 );
 		add_filter( 'the_content', array( $this, 'easy_footnote_reset' ), 999 );
 		
@@ -300,6 +301,15 @@ class easyFootnotes {
 	public function efn_load_textdomain() {
 		load_plugin_textdomain( 'easy-footnotes', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' ); 
 	}
+	
+	/**
+	 * Manually reset footnotes and counter
+	 */
+	public function short_code_reset() {
+		$this->footnoteCount = 0;
+		$this->footnotes = array();
+		return "";
+	}	
 }
 
 $easyFootnotes = new easyFootnotes();
