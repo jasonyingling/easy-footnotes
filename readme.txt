@@ -3,8 +3,8 @@ Contributors: yingling017, twinpictures
 Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
-Tested up to: 6.6.2
-Stable tag: 1.1.8
+Tested up to: 6.7
+Stable tag: 1.1.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,6 +69,11 @@ add_action( 'wp_enqueue_scripts', 'efn_deregister_scripts' );</code>
 2. Several footnotes (feetnote?) at the bottom of the post.
 
 == Changelog ==
+
+= 1.1.9 =
+* Adds support for duplicate footnotes using the same number
+* Fixes a bug with multiple footnotes showing at the bottom when do_shortcode() is run on the_content outside the main loop.
+* Add better i18n support for the plugin
 
 = 1.1.8 =
 * WordPress 6.6 support

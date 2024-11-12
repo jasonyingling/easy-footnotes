@@ -3,7 +3,8 @@
  * Plugin Name: Easy Footnotes
  * Plugin URI: https://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
- * Version: 1.1.8
+ * Text Domain: easy-footnotes
+ * Version: 1.1.9
  * Author: Jason Yingling
  * Author URI: https://jasonyingling.me
  * License: GPL2
@@ -41,8 +42,12 @@ class easyFootnotes {
 	public $footnoteCount = 0;
 	public $prevPost;
 	public $footnoteOptions;
+	public $footnoteLookup = array();
+	public $usedFootnoteNumbers = array();
 
 	private $footnoteSettings;
+
+	private $version = '1.1.9';
 
 	/**
 	 * Constructing the initial plugin options, shortcodes, and hooks.
@@ -60,9 +65,11 @@ class easyFootnotes {
 		add_shortcode( 'efn_note', array( $this, 'easy_footnote_shortcode' ) );
 		add_filter( 'the_content', array( $this, 'easy_footnote_after_content' ), 20 );
 		add_filter( 'the_content', array( $this, 'easy_footnote_reset' ), 999 );
+		
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_qtip_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'easy_footnotes_admin_actions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'easy_footnotes_admin_scripts' ) );
+		add_action( 'init', array($this, 'efn_load_textdomain') );
 
 		$this->footnoteOptions = get_option( 'easy_footnotes_options' );
 	}
@@ -71,11 +78,11 @@ class easyFootnotes {
 	 * Registering the scripts and styles used by jQuery qTip.
 	 */
 	public function register_qtip_scripts() {
-		wp_register_script( 'imagesloaded', plugins_url( '/assets/qtip/imagesloaded.pkgd.min.js', __FILE__ ), array(), '3.1.8', true );
-		wp_register_script( 'qtip', plugins_url( '/assets/qtip/jquery.qtip.min.js', __FILE__ ), array( 'jquery', 'imagesloaded' ), '3.0.3', true );
-		wp_register_script( 'qtipcall', plugins_url( '/assets/qtip/jquery.qtipcall.js', __FILE__ ), array( 'jquery', 'qtip' ), '1.1.0', true );
-		wp_register_style( 'qtipstyles', plugins_url( '/assets/qtip/jquery.qtip.min.css', __FILE__ ), array(), '3.0.3', false );
-		wp_register_style( 'easyfootnotescss', plugins_url( '/assets/easy-footnotes.css', __FILE__ ), array(), '1.1.0', false );
+		wp_register_script( 'imagesloaded', plugins_url( '/assets/qtip/imagesloaded.pkgd.min.js', __FILE__ ), array(), $this->version, true );
+		wp_register_script( 'qtip', plugins_url( '/assets/qtip/jquery.qtip.min.js', __FILE__ ), array( 'jquery', 'imagesloaded' ), $this->version, true );
+		wp_register_script( 'qtipcall', plugins_url( '/assets/qtip/jquery.qtipcall.js', __FILE__ ), array( 'jquery', 'qtip' ), $this->version, true );
+		wp_register_style( 'qtipstyles', plugins_url( '/assets/qtip/jquery.qtip.min.css', __FILE__ ), array(), $this->version, false );
+		wp_register_style( 'easyfootnotescss', plugins_url( '/assets/easy-footnotes.css', __FILE__ ), array(), $this->version, false );
 	}
 
 	/**
@@ -98,9 +105,10 @@ class easyFootnotes {
 		wp_enqueue_script( 'qtipcall' );
 		wp_enqueue_style( 'dashicons' );
 
+		// Accept optional custom number attribute
 		$atts = shortcode_atts(
 			array(
-				// Future home of shortcode atts.
+				'num' => null
 			),
 			$atts
 		);
@@ -108,25 +116,52 @@ class easyFootnotes {
 		$post_id = get_the_ID();
 
 		$content = do_shortcode( $content );
+		
+		$content_id = md5( preg_replace("/[^A-Za-z0-9 ]/", '', wp_strip_all_tags( html_entity_decode( $content ) ) ) );
 
-		$count = $this->footnoteCount;
-
-		// Increment the counter.
-		$count++;
-
-		// Set the footnoteCount (This whole process needs reworked).
-		$this->footnoteCount = $count;
-
-		$this->easy_footnote_content( $content );
-
-		if ( ( is_singular() || $efn_show_on_front ) && is_main_query() ) {
-			$footnoteLink = '#easy-footnote-bottom-' . $this->footnoteCount . '-' . $post_id;
-		} else {
-			$footnoteLink = get_permalink( get_the_ID() ) . '#easy-footnote-bottom-' . $this->footnoteCount . '-' . $post_id;
+		/**
+		 * Search for existing footnote for removing duplicate
+		 * Also add the same numbers to duplicate footnotes
+		 */
+		if (!isset($this->usedFootnoteNumbers)) {
+			$this->usedFootnoteNumbers = array();
+		}
+		if (!isset($this->footnoteLookup)) {
+			$this->footnoteLookup = array();
 		}
 
-		$footnoteContent = "<span id='easy-footnote-" . esc_attr( $this->footnoteCount ) . '-' . $post_id . "' class='easy-footnote-margin-adjust'></span><span class='easy-footnote'><a href='" . esc_url( $footnoteLink ) . "' title='" . htmlspecialchars( $content, ENT_QUOTES ) . "'><sup>" . esc_html( $this->footnoteCount ) . "</sup></a></span>";
+		// If a custom number is provided, use that number and mark it as used
+		if ( ! empty( $atts['num'] ) ) {
+			$footnote_number = intval( $atts['num'] );
+			$this->usedFootnoteNumbers[] = $footnote_number; // Track custom number
+			$this->footnoteLookup[$content_id] = $footnote_number;
+			$this->footnotes[$footnote_number] = $content;
+		} elseif ( isset( $this->footnoteLookup[$content_id] ) ) {
+			// Use existing footnote number for duplicate content
+			$footnote_number = $this->footnoteLookup[$content_id];
+		} else {
+			// Auto-increment for new footnotes, skipping used numbers
+			do {
+				$this->footnoteCount++;
+			} while ( in_array( $this->footnoteCount, $this->usedFootnoteNumbers ) );
+	
+			$footnote_number = $this->footnoteCount;
+			$this->footnoteLookup[$content_id] = $footnote_number;
+			$this->usedFootnoteNumbers[] = $footnote_number; // Mark as used
+			$this->footnotes[$footnote_number] = $content;
+		}
 
+		// Generate the correct footnote link with the correct number
+		$footnoteLink = (is_singular() || $efn_show_on_front) && is_main_query() 
+			? '#easy-footnote-bottom-' . $footnote_number . '-' . $post_id 
+			: get_permalink($post_id) . '#easy-footnote-bottom-' . $footnote_number . '-' . $post_id;
+	
+		// Now generate the footnote markup with the correct number and link
+		$footnoteContent = "<span id='easy-footnote-" . esc_attr($footnote_number) . '-' . $post_id 
+			. "' class='easy-footnote-margin-adjust'></span><span class='easy-footnote'>"
+			. "<a href='" . esc_url($footnoteLink) . "' title='" . htmlspecialchars($content, ENT_QUOTES) 
+			. "'><sup>" . esc_html($footnote_number) . "</sup></a></span>";
+	
 		return $footnoteContent;
 	}
 
@@ -168,8 +203,25 @@ class easyFootnotes {
 
 			$post_id = get_the_ID();
 
+			// Create a new array to track used footnotes and their numbers
+			$footnote_number = 1;
+
+			// sort footnotes according to numbers
+			ksort($footnotesInsert);
+
 			foreach ( $footnotesInsert as $count => $footnote ) {
-				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-' .esc_attr( $count ) . '-' . $post_id . '" class="easy-footnote-margin-adjust"></span>' . wp_kses_post( $footnote ) . '<a class="easy-footnote-to-top" href="' . esc_url( '#easy-footnote-' . $count . '-' . $post_id ) . '"></a></li>';
+				// If the footnote is already in the lookup, use its number
+				if ( isset( $this->footnoteLookup[$footnote] ) ) {
+					$count = $this->footnoteLookup[$footnote];
+				} else {
+					// Skip custom numbers that were already used
+					while ( in_array( $footnote_number, $this->usedFootnoteNumbers ) ) {
+						$footnote_number++;
+					}
+				}
+	
+				// Generate back-to-top link and the footnote item
+				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-' . esc_attr( $count ) . '-' . $post_id . '" class="easy-footnote-margin-adjust"></span>' . wp_kses_post( $footnote ) . '<a class="easy-footnote-to-top" href="' . esc_url( '#easy-footnote-' . $count . '-' . $post_id ) . '"></a></li>';
 			}
 			if ( ! empty( $footnotesInsert ) ) {
 				if ( true === $useLabel ) {
@@ -238,8 +290,15 @@ class easyFootnotes {
 	 * Function for enqueuring EAsy Footnotes admin scripts.
 	 */
 	public function easy_footnotes_admin_scripts() {
-		wp_enqueue_style( 'easy-footnotes-admin-styles', plugins_url( '/assets/easy-footnotes-admin.css', __FILE__ ), '', '1.0.13' );
-		wp_enqueue_script( 'easy-footnotes-admin-scripts', plugins_url( '/assets/js/easy-footnotes-admin.js', __FILE__ ), array( 'jquery' ), '1.0.1', true );
+		wp_enqueue_style( 'easy-footnotes-admin-styles', plugins_url( '/assets/easy-footnotes-admin.css', __FILE__ ), '', $this->version );
+		wp_enqueue_script( 'easy-footnotes-admin-scripts', plugins_url( '/assets/js/easy-footnotes-admin.js', __FILE__ ), array( 'jquery' ), $this->version, true );
+	}
+
+	/**
+	 * Load plugin textdomain easy-footnotes
+	 */
+	public function efn_load_textdomain() {
+		load_plugin_textdomain( 'easy-footnotes', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' ); 
 	}
 }
 
