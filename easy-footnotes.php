@@ -111,6 +111,8 @@ class easyFootnotes {
 		$post_id = get_the_ID();
 
 		$content = do_shortcode( $content );
+		
+		$content_id = md5( preg_replace("/[^A-Za-z0-9 ]/", '', wp_strip_all_tags( html_entity_decode( $content ) ) ) );
 
 		/**
 		 * Search for existing footnote for removing duplicate
@@ -127,11 +129,11 @@ class easyFootnotes {
 		if ( ! empty( $atts['num'] ) ) {
 			$footnote_number = intval( $atts['num'] );
 			$this->usedFootnoteNumbers[] = $footnote_number; // Track custom number
-			$this->footnoteLookup[$content] = $footnote_number;
+			$this->footnoteLookup[$content_id] = $footnote_number;
 			$this->footnotes[$footnote_number] = $content;
-		} elseif ( isset( $this->footnoteLookup[$content] ) ) {
+		} elseif ( isset( $this->footnoteLookup[$content_id] ) ) {
 			// Use existing footnote number for duplicate content
-			$footnote_number = $this->footnoteLookup[$content];
+			$footnote_number = $this->footnoteLookup[$content_id];
 		} else {
 			// Auto-increment for new footnotes, skipping used numbers
 			do {
@@ -139,7 +141,7 @@ class easyFootnotes {
 			} while ( in_array( $this->footnoteCount, $this->usedFootnoteNumbers ) );
 	
 			$footnote_number = $this->footnoteCount;
-			$this->footnoteLookup[$content] = $footnote_number;
+			$this->footnoteLookup[$content_id] = $footnote_number;
 			$this->usedFootnoteNumbers[] = $footnote_number; // Mark as used
 			$this->footnotes[$footnote_number] = $content;
 		}
