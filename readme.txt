@@ -4,7 +4,7 @@ Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
 Tested up to: 6.7
-Stable tag: 1.1.9
+Stable tag: 1.1.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ This is a hard reset to fix a bug with themes/plugins using `do_shortcode( get_t
 2. Several footnotes (feetnote?) at the bottom of the post.
 
 == Changelog ==
+
+= 1.1.10 =
+* Fixes a bug with sites that called the_content() multiple times not displaying footnotes due to `easy_footnote_reset` running.
+* `easy_footnote_reset` now only runs when an option is activated. This had previously been implemented as a workaround for a bug that was addressed in 1.1.9.
 
 = 1.1.9 =
 * Adds support for duplicate footnotes using the same number
