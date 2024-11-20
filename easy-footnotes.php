@@ -58,6 +58,7 @@ class easyFootnotes {
 			'useLabel'                       => false,
 			'hide_easy_footnote_after_posts' => false,
 			'show_easy_footnote_on_front'    => false,
+			'reset_footnotes'                => false,
 		);
 
 		add_option( 'easy_footnotes_options', $this->footnoteSettings );
@@ -65,7 +66,11 @@ class easyFootnotes {
 		add_shortcode( 'efn_note', array( $this, 'easy_footnote_shortcode' ) );
 		add_shortcode( 'efn_reset', array( $this, 'short_code_reset' ) );
 		add_filter( 'the_content', array( $this, 'easy_footnote_after_content' ), 20 );
-		add_filter( 'the_content', array( $this, 'easy_footnote_reset' ), 999 );
+		
+		$this->footnoteOptions = get_option( 'easy_footnotes_options' );
+		if ( isset( $this->footnoteOptions['reset_footnotes'] ) && $this->footnoteOptions['reset_footnotes'] ) {
+			add_filter( 'the_content', array( $this, 'easy_footnote_reset' ), 999 );
+		}
 		
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_qtip_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'easy_footnotes_admin_actions' ) );

@@ -17,12 +17,14 @@ if ( isset( $_POST['easy_footnote_hidden'] ) ) {
 		$easyFootnoteCheck              = isset( $_POST['easy_footnote_check'] ) ? true : false;
 		$hide_easy_footnote_after_posts = isset( $_POST['hide_easy_footnote_after_posts'] ) ? true : false;
 		$show_easy_footnote_on_front    = isset( $_POST['show_easy_footnote_on_front'] ) ? true : false;
+		$reset_footnotes                = isset( $_POST['reset_footnotes'] ) ? true : false;
 
 		$updateOptions = array(
 			'footnoteLabel'                  => sanitize_text_field( $easyFootnoteLabel ),
 			'useLabel'                       => $easyFootnoteCheck,
 			'hide_easy_footnote_after_posts' => $hide_easy_footnote_after_posts,
 			'show_easy_footnote_on_front'    => $show_easy_footnote_on_front,
+			'reset_footnotes'                => $reset_footnotes,
 		);
 
 		update_option( 'easy_footnotes_options', $updateOptions );
@@ -38,6 +40,7 @@ if ( isset( $_POST['easy_footnote_hidden'] ) ) {
 	$easyFootnoteCheck              = isset( $footnoteOptions['useLabel'] ) ? $footnoteOptions['useLabel'] : false;
 	$hide_easy_footnote_after_posts = isset( $footnoteOptions['hide_easy_footnote_after_posts'] ) ? $footnoteOptions['hide_easy_footnote_after_posts'] : false;
 	$show_easy_footnote_on_front    = isset( $footnoteOptions['show_easy_footnote_on_front'] ) ? $footnoteOptions['show_easy_footnote_on_front'] : false;
+	$reset_footnotes                = isset( $footnoteOptions['reset_footnotes'] ) ? $footnoteOptions['reset_footnotes'] : false;
 }
 ?>
 
@@ -55,7 +58,10 @@ if ( isset( $_POST['easy_footnote_hidden'] ) ) {
 
 		<p><?php esc_html_e( 'Hide Footnotes after post content: ', 'easy-footnotes' ); ?><input type="checkbox" name="hide_easy_footnote_after_posts" <?php checked( $hide_easy_footnote_after_posts ); ?> size="20"></p>
 
+		<p><?php esc_html_e( 'Reset Footnotes to avoid duplication after the content: ', 'easy-footnotes' ); ?><input type="checkbox" name="reset_footnotes" <?php checked( $reset_footnotes ); ?> size="20"></p>
+
 		<p id="easy_footnote_on_front"><?php esc_html_e( 'Show Footnotes on Front Page: ', 'easy-footnotes' ); ?><input type="checkbox" name="show_easy_footnote_on_front" <?php checked( $show_easy_footnote_on_front ); ?> size="20"></p>
+
 
 		<p class="submit">
 		<input type="submit" name="Submit" value="<?php esc_attr_e( 'Update Options', 'easy-footnotes' ); ?>" />
