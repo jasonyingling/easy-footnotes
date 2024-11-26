@@ -4,7 +4,7 @@
  * Plugin URI: https://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
  * Text Domain: easy-footnotes
- * Version: 1.1.10
+ * Version: 1.1.11
  * Author: Jason Yingling
  * Author URI: https://jasonyingling.me
  * License: GPL2
@@ -47,7 +47,7 @@ class easyFootnotes {
 
 	private $footnoteSettings;
 
-	private $version = '1.1.10';
+	private $version = '1.1.11';
 
 	/**
 	 * Constructing the initial plugin options, shortcodes, and hooks.
@@ -69,7 +69,7 @@ class easyFootnotes {
 		add_filter( 'the_content', array( $this, 'easy_footnote_after_content' ), 20 );
 		
 		$this->footnoteOptions = get_option( 'easy_footnotes_options' );
-		if ( isset( $this->footnoteOptions['reset_footnotes'] ) && $this->footnoteOptions['reset_footnotes'] ) {
+		if ( isset( $this->footnoteOptions['reset_footnotes'] ) && $this->footnoteOptions['reset_footnotes'] || ( ! isset( $this->footnoteOptions[ 'combine_duplicate_footnotes' ] ) || $this->footnoteOptions[ 'combine_duplicate_footnotes' ] === false ) ) {
 			add_filter( 'the_content', array( $this, 'easy_footnote_reset' ), 999 );
 		}
 		
@@ -137,34 +137,25 @@ class easyFootnotes {
 			$this->footnoteLookup = array();
 		}
 
-		if ( isset( $this->footnoteOptions[ 'combine_duplicate_footnotes' ] ) && $this->footnoteOptions[ 'combine_duplicate_footnotes' ] === true ) {
-			// If a custom number is provided, use that number and mark it as used
-			if ( ! empty( $atts['num'] ) ) {
-				$footnote_number = intval( $atts['num'] );
-				$this->usedFootnoteNumbers[] = $footnote_number; // Track custom number
-				$this->footnoteLookup[$content_id] = $footnote_number;
-				$this->footnotes[$footnote_number] = $content;
-			} elseif ( isset( $this->footnoteLookup[$content_id] ) ) {
-				// Use existing footnote number for duplicate content
-				$footnote_number = $this->footnoteLookup[$content_id];
-			} else {
-				// Auto-increment for new footnotes, skipping used numbers
-				do {
-					$this->footnoteCount++;
-				} while ( in_array( $this->footnoteCount, $this->usedFootnoteNumbers ) );
-		
-				$footnote_number = $this->footnoteCount;
-				$this->footnoteLookup[$content_id] = $footnote_number;
-				$this->usedFootnoteNumbers[] = $footnote_number; // Mark as used
-				$this->footnotes[$footnote_number] = $content;
-			}
+		// If a custom number is provided, use that number and mark it as used
+		if ( ! empty( $atts['num'] ) ) {
+			$footnote_number = intval( $atts['num'] );
+			$this->usedFootnoteNumbers[] = $footnote_number; // Track custom number
+			$this->footnoteLookup[$content_id] = $footnote_number;
+			$this->footnotes[$footnote_number] = $content;
+		} elseif ( isset( $this->footnoteLookup[$content_id] ) && isset( $this->footnoteOptions[ 'combine_duplicate_footnotes' ] ) && $this->footnoteOptions[ 'combine_duplicate_footnotes' ] === true ) {
+			// Use existing footnote number for duplicate content
+			$footnote_number = $this->footnoteLookup[$content_id];
 		} else {
-			$count = $this->footnoteCount;
-			// Increment the counter.
-			$count++;
-			// Set the footnoteCount (This whole process needs reworked).
-			$this->footnoteCount = $count;
-			$this->easy_footnote_content( $content );
+			// Auto-increment for new footnotes, skipping used numbers
+			do {
+				$this->footnoteCount++;
+			} while ( in_array( $this->footnoteCount, $this->usedFootnoteNumbers ) );
+	
+			$footnote_number = $this->footnoteCount;
+			$this->footnoteLookup[$content_id] = $footnote_number;
+			$this->usedFootnoteNumbers[] = $footnote_number; // Mark as used
+			$this->footnotes[$footnote_number] = $content;
 		}
 
 		// Generate the correct footnote link with the correct number

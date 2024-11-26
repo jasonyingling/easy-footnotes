@@ -61,11 +61,14 @@ if ( isset( $_POST['easy_footnote_hidden'] ) ) {
 
 		<p><?php esc_html_e( 'Hide Footnotes after post content: ', 'easy-footnotes' ); ?><input type="checkbox" name="hide_easy_footnote_after_posts" <?php checked( $hide_easy_footnote_after_posts ); ?> size="20"></p>
 
-		<p><?php esc_html_e( 'Reset Footnotes to avoid duplication after the content: ', 'easy-footnotes' ); ?><input type="checkbox" name="reset_footnotes" <?php checked( $reset_footnotes ); ?> size="20"></p>
-
 		<p id="easy_footnote_on_front"><?php esc_html_e( 'Show Footnotes on Front Page: ', 'easy-footnotes' ); ?><input type="checkbox" name="show_easy_footnote_on_front" <?php checked( $show_easy_footnote_on_front ); ?> size="20"></p>
 
 		<p><?php esc_html_e( 'Combine duplicate footnotes: ', 'easy-footnotes' ); ?><input type="checkbox" name="combine_duplicate_footnotes" <?php checked( $combine_duplicate_footnotes ); ?> size="20"></p>
+
+		<p><?php esc_html_e( 'Reset Footnotes to avoid duplication after the content: ', 'easy-footnotes' ); ?><input type="checkbox" name="reset_footnotes" <?php checked( $reset_footnotes ); ?> size="20">
+			<br>
+			<span><?php esc_html_e( 'If you have "Combine duplicate footnotes" turned on, you should leave this setting off. ', 'easy-footnotes' ); ?><span>
+		</p>
 
 		<p class="submit">
 		<input type="submit" name="Submit" value="<?php esc_attr_e( 'Update Options', 'easy-footnotes' ); ?>" />
