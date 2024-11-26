@@ -4,7 +4,7 @@
  * Plugin URI: https://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
  * Text Domain: easy-footnotes
- * Version: 1.1.10
+ * Version: 1.1.11
  * Author: Jason Yingling
  * Author URI: https://jasonyingling.me
  * License: GPL2
@@ -47,7 +47,7 @@ class easyFootnotes {
 
 	private $footnoteSettings;
 
-	private $version = '1.1.10';
+	private $version = '1.1.11';
 
 	/**
 	 * Constructing the initial plugin options, shortcodes, and hooks.
@@ -59,6 +59,7 @@ class easyFootnotes {
 			'hide_easy_footnote_after_posts' => false,
 			'show_easy_footnote_on_front'    => false,
 			'reset_footnotes'                => false,
+			'combine_duplicate_footnotes'    => false,
 		);
 
 		add_option( 'easy_footnotes_options', $this->footnoteSettings );
@@ -68,7 +69,7 @@ class easyFootnotes {
 		add_filter( 'the_content', array( $this, 'easy_footnote_after_content' ), 20 );
 		
 		$this->footnoteOptions = get_option( 'easy_footnotes_options' );
-		if ( isset( $this->footnoteOptions['reset_footnotes'] ) && $this->footnoteOptions['reset_footnotes'] ) {
+		if ( isset( $this->footnoteOptions['reset_footnotes'] ) && $this->footnoteOptions['reset_footnotes'] || ( ! isset( $this->footnoteOptions[ 'combine_duplicate_footnotes' ] ) || $this->footnoteOptions[ 'combine_duplicate_footnotes' ] === false ) ) {
 			add_filter( 'the_content', array( $this, 'easy_footnote_reset' ), 999 );
 		}
 		
@@ -142,7 +143,7 @@ class easyFootnotes {
 			$this->usedFootnoteNumbers[] = $footnote_number; // Track custom number
 			$this->footnoteLookup[$content_id] = $footnote_number;
 			$this->footnotes[$footnote_number] = $content;
-		} elseif ( isset( $this->footnoteLookup[$content_id] ) ) {
+		} elseif ( isset( $this->footnoteLookup[$content_id] ) && isset( $this->footnoteOptions[ 'combine_duplicate_footnotes' ] ) && $this->footnoteOptions[ 'combine_duplicate_footnotes' ] === true ) {
 			// Use existing footnote number for duplicate content
 			$footnote_number = $this->footnoteLookup[$content_id];
 		} else {
@@ -216,16 +217,18 @@ class easyFootnotes {
 			ksort($footnotesInsert);
 
 			foreach ( $footnotesInsert as $count => $footnote ) {
-				// If the footnote is already in the lookup, use its number
-				if ( isset( $this->footnoteLookup[$footnote] ) ) {
-					$count = $this->footnoteLookup[$footnote];
-				} else {
-					// Skip custom numbers that were already used
-					while ( in_array( $footnote_number, $this->usedFootnoteNumbers ) ) {
-						$footnote_number++;
+
+				if ( isset( $this->footnoteOptions[ 'combine_duplicate_footnotes' ] ) && $this->footnoteOptions[ 'combine_duplicate_footnotes' ] === true ) {
+					// If the footnote is already in the lookup, use its number
+					if ( isset( $this->footnoteLookup[$footnote] ) ) {
+						$count = $this->footnoteLookup[$footnote];
+					} else {
+						// Skip custom numbers that were already used
+						while ( in_array( $footnote_number, $this->usedFootnoteNumbers ) ) {
+							$footnote_number++;
+						}
 					}
-				}
-	
+				} 
 				// Generate back-to-top link and the footnote item
 				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-' . esc_attr( $count ) . '-' . $post_id . '" class="easy-footnote-margin-adjust"></span>' . wp_kses_post( $footnote ) . '<a class="easy-footnote-to-top" href="' . esc_url( '#easy-footnote-' . $count . '-' . $post_id ) . '"></a></li>';
 			}
