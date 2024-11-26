@@ -59,6 +59,7 @@ class easyFootnotes {
 			'hide_easy_footnote_after_posts' => false,
 			'show_easy_footnote_on_front'    => false,
 			'reset_footnotes'                => false,
+			'combine_duplicate_footnotes'    => false,
 		);
 
 		add_option( 'easy_footnotes_options', $this->footnoteSettings );
@@ -136,25 +137,34 @@ class easyFootnotes {
 			$this->footnoteLookup = array();
 		}
 
-		// If a custom number is provided, use that number and mark it as used
-		if ( ! empty( $atts['num'] ) ) {
-			$footnote_number = intval( $atts['num'] );
-			$this->usedFootnoteNumbers[] = $footnote_number; // Track custom number
-			$this->footnoteLookup[$content_id] = $footnote_number;
-			$this->footnotes[$footnote_number] = $content;
-		} elseif ( isset( $this->footnoteLookup[$content_id] ) ) {
-			// Use existing footnote number for duplicate content
-			$footnote_number = $this->footnoteLookup[$content_id];
+		if ( isset( $this->footnoteOptions[ 'combine_duplicate_footnotes' ] ) && $this->footnoteOptions[ 'combine_duplicate_footnotes' ] === true ) {
+			// If a custom number is provided, use that number and mark it as used
+			if ( ! empty( $atts['num'] ) ) {
+				$footnote_number = intval( $atts['num'] );
+				$this->usedFootnoteNumbers[] = $footnote_number; // Track custom number
+				$this->footnoteLookup[$content_id] = $footnote_number;
+				$this->footnotes[$footnote_number] = $content;
+			} elseif ( isset( $this->footnoteLookup[$content_id] ) ) {
+				// Use existing footnote number for duplicate content
+				$footnote_number = $this->footnoteLookup[$content_id];
+			} else {
+				// Auto-increment for new footnotes, skipping used numbers
+				do {
+					$this->footnoteCount++;
+				} while ( in_array( $this->footnoteCount, $this->usedFootnoteNumbers ) );
+		
+				$footnote_number = $this->footnoteCount;
+				$this->footnoteLookup[$content_id] = $footnote_number;
+				$this->usedFootnoteNumbers[] = $footnote_number; // Mark as used
+				$this->footnotes[$footnote_number] = $content;
+			}
 		} else {
-			// Auto-increment for new footnotes, skipping used numbers
-			do {
-				$this->footnoteCount++;
-			} while ( in_array( $this->footnoteCount, $this->usedFootnoteNumbers ) );
-	
-			$footnote_number = $this->footnoteCount;
-			$this->footnoteLookup[$content_id] = $footnote_number;
-			$this->usedFootnoteNumbers[] = $footnote_number; // Mark as used
-			$this->footnotes[$footnote_number] = $content;
+			$count = $this->footnoteCount;
+			// Increment the counter.
+			$count++;
+			// Set the footnoteCount (This whole process needs reworked).
+			$this->footnoteCount = $count;
+			$this->easy_footnote_content( $content );
 		}
 
 		// Generate the correct footnote link with the correct number
@@ -216,16 +226,18 @@ class easyFootnotes {
 			ksort($footnotesInsert);
 
 			foreach ( $footnotesInsert as $count => $footnote ) {
-				// If the footnote is already in the lookup, use its number
-				if ( isset( $this->footnoteLookup[$footnote] ) ) {
-					$count = $this->footnoteLookup[$footnote];
-				} else {
-					// Skip custom numbers that were already used
-					while ( in_array( $footnote_number, $this->usedFootnoteNumbers ) ) {
-						$footnote_number++;
+
+				if ( isset( $this->footnoteOptions[ 'combine_duplicate_footnotes' ] ) && $this->footnoteOptions[ 'combine_duplicate_footnotes' ] === true ) {
+					// If the footnote is already in the lookup, use its number
+					if ( isset( $this->footnoteLookup[$footnote] ) ) {
+						$count = $this->footnoteLookup[$footnote];
+					} else {
+						// Skip custom numbers that were already used
+						while ( in_array( $footnote_number, $this->usedFootnoteNumbers ) ) {
+							$footnote_number++;
+						}
 					}
-				}
-	
+				} 
 				// Generate back-to-top link and the footnote item
 				$footnoteCopy .= '<li class="easy-footnote-single"><span id="easy-footnote-bottom-' . esc_attr( $count ) . '-' . $post_id . '" class="easy-footnote-margin-adjust"></span>' . wp_kses_post( $footnote ) . '<a class="easy-footnote-to-top" href="' . esc_url( '#easy-footnote-' . $count . '-' . $post_id ) . '"></a></li>';
 			}
