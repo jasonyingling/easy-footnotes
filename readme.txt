@@ -76,6 +76,10 @@ This is a hard reset to fix a bug with themes/plugins using `do_shortcode( get_t
 
 == Changelog ==
 
+= 1.1.11 =
+* Made combined footnote functionality from 1.1.9 enabled by a setting to avoid breaking sites that rely on the old behavior.
+* Now can be turned on with "Combine duplicate footnotes" setting in Easy Footnotes settings.
+
 = 1.1.10 =
 * Fixes a bug with sites that called the_content() multiple times not displaying footnotes due to `easy_footnote_reset` running.
 * `easy_footnote_reset` now only runs when an option is activated. This had previously been implemented as a workaround for a bug that was addressed in 1.1.9.
