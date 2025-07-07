@@ -3,8 +3,8 @@ Contributors: yingling017, twinpictures
 Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
-Tested up to: 6.7.1
-Stable tag: 1.1.12
+Tested up to: 6.8.1
+Stable tag: 1.1.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ This is a hard reset to fix a bug with themes/plugins using `do_shortcode( get_t
 2. Several footnotes (feetnote?) at the bottom of the post.
 
 == Changelog ==
+
+= 1.1.13 =
+* Fixed textdomain loading issue for WordPress 6.7 compatibility by preventing early translation calls during class construction.
 
 = 1.1.12 =
 * Bugfix for instances where `the_content` is called multiple times in a page.
