@@ -4,7 +4,7 @@
  * Plugin URI: https://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
  * Text Domain: easy-footnotes
- * Version: 1.1.12
+ * Version: 1.1.13
  * Author: Jason Yingling
  * Author URI: https://jasonyingling.me
  * License: GPL2
@@ -47,14 +47,14 @@ class easyFootnotes {
 
 	private $footnoteSettings;
 
-	private $version = '1.1.12';
+	private $version = '1.1.13';
 
 	/**
 	 * Constructing the initial plugin options, shortcodes, and hooks.
 	 */
 	public function __construct() {
 		$this->footnoteSettings = array(
-			'footnoteLabel'                  => __( 'Footnotes', 'easy-footnotes' ),
+			'footnoteLabel'                  => 'Footnotes',
 			'useLabel'                       => false,
 			'hide_easy_footnote_after_posts' => false,
 			'show_easy_footnote_on_front'    => false,
