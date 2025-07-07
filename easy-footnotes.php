@@ -54,7 +54,7 @@ class easyFootnotes {
 	 */
 	public function __construct() {
 		$this->footnoteSettings = array(
-			'footnoteLabel'                  => __( 'Footnotes', 'easy-footnotes' ),
+			'footnoteLabel'                  => 'Footnotes',
 			'useLabel'                       => false,
 			'hide_easy_footnote_after_posts' => false,
 			'show_easy_footnote_on_front'    => false,
