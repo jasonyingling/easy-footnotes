@@ -85,8 +85,10 @@ class easyFootnotes {
 	 * Registering the scripts and styles used by Floating UI.
 	 */
 	public function register_qtip_scripts() {
-		// Register Floating UI library (modern replacement for qtip2)
-		wp_register_script( 'floating-ui', plugins_url( '/assets/floating-ui/floating-ui.dom.min.js', __FILE__ ), array(), $this->version, true );
+		// Register Floating UI core library (required dependency for dom bundle)
+		wp_register_script( 'floating-ui-core', plugins_url( '/assets/floating-ui/floating-ui.core.umd.min.js', __FILE__ ), array(), $this->version, true );
+		// Register Floating UI DOM library (modern replacement for qtip2)
+		wp_register_script( 'floating-ui', plugins_url( '/assets/floating-ui/floating-ui.dom.min.js', __FILE__ ), array( 'floating-ui-core' ), $this->version, true );
 		// Register Easy Footnotes tooltip implementation
 		wp_register_script( 'efn-tooltip', plugins_url( '/assets/floating-ui/easy-footnotes-tooltip.js', __FILE__ ), array( 'floating-ui' ), $this->version, true );
 		// Register tooltip styles
