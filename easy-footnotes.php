@@ -4,7 +4,7 @@
  * Plugin URI: https://jasonyingling.me/easy-footnotes-wordpress/
  * Description: Easily add footnotes to your posts with a simple shortcode.
  * Text Domain: easy-footnotes
- * Version: 1.1.13
+ * Version: 1.1.14
  * Author: Jason Yingling
  * Author URI: https://jasonyingling.me
  * License: GPL2
@@ -47,7 +47,7 @@ class easyFootnotes {
 
 	private $footnoteSettings;
 
-	private $version = '1.1.13';
+	private $version = '1.1.14';
 
 	/**
 	 * Constructing the initial plugin options, shortcodes, and hooks.
@@ -82,13 +82,16 @@ class easyFootnotes {
 	}
 
 	/**
-	 * Registering the scripts and styles used by jQuery qTip.
+	 * Registering the scripts and styles used by Floating UI.
 	 */
 	public function register_qtip_scripts() {
-		wp_register_script( 'imagesloaded', plugins_url( '/assets/qtip/imagesloaded.pkgd.min.js', __FILE__ ), array(), $this->version, true );
-		wp_register_script( 'qtip', plugins_url( '/assets/qtip/jquery.qtip.min.js', __FILE__ ), array( 'jquery', 'imagesloaded' ), $this->version, true );
-		wp_register_script( 'qtipcall', plugins_url( '/assets/qtip/jquery.qtipcall.js', __FILE__ ), array( 'jquery', 'qtip' ), $this->version, true );
-		wp_register_style( 'qtipstyles', plugins_url( '/assets/qtip/jquery.qtip.min.css', __FILE__ ), array(), $this->version, false );
+		// Register Floating UI library (modern replacement for qtip2)
+		wp_register_script( 'floating-ui', plugins_url( '/assets/floating-ui/floating-ui.dom.min.js', __FILE__ ), array(), $this->version, true );
+		// Register Easy Footnotes tooltip implementation
+		wp_register_script( 'efn-tooltip', plugins_url( '/assets/floating-ui/easy-footnotes-tooltip.js', __FILE__ ), array( 'floating-ui' ), $this->version, true );
+		// Register tooltip styles
+		wp_register_style( 'efn-tooltip-styles', plugins_url( '/assets/floating-ui/easy-footnotes-tooltip.css', __FILE__ ), array(), $this->version, false );
+		// Register main plugin styles
 		wp_register_style( 'easyfootnotescss', plugins_url( '/assets/easy-footnotes.css', __FILE__ ), array(), $this->version, false );
 	}
 
@@ -105,11 +108,10 @@ class easyFootnotes {
 			$efn_show_on_front = false;
 		}
 
-		wp_enqueue_style( 'qtipstyles' );
+		wp_enqueue_style( 'efn-tooltip-styles' );
 		wp_enqueue_style( 'easyfootnotescss' );
-		wp_enqueue_script( 'imagesloaded' );
-		wp_enqueue_script( 'qtip' );
-		wp_enqueue_script( 'qtipcall' );
+		wp_enqueue_script( 'floating-ui' );
+		wp_enqueue_script( 'efn-tooltip' );
 		wp_enqueue_style( 'dashicons' );
 
 		// Accept optional custom number attribute
