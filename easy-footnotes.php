@@ -146,6 +146,10 @@ class easyFootnotes {
 			$this->usedFootnoteNumbers[] = $footnote_number; // Track custom number
 			$this->footnoteLookup[$content_id] = $footnote_number;
 			$this->footnotes[$footnote_number] = $content;
+			// Ensure subsequent auto-incremented footnotes continue after this number
+			if ( $footnote_number > $this->footnoteCount ) {
+				$this->footnoteCount = $footnote_number;
+			}
 		} elseif ( isset( $this->footnoteLookup[$content_id] ) ) {
 			if ( isset( $this->footnoteOptions[ 'combine_duplicate_footnotes' ] ) && $this->footnoteOptions[ 'combine_duplicate_footnotes' ] === true ) {
 				// Use existing footnote number for duplicate content
