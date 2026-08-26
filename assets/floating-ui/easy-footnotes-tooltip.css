@@ -74,12 +74,3 @@
         transition: none;
     }
 }
-
-/* Dark mode support (optional enhancement) */
-@media (prefers-color-scheme: dark) {
-    .efn-tooltip {
-        background-color: #2d2d2d;
-        color: #e0e0e0;
-        border-color: rgba(255, 255, 255, 0.2);
-    }
-}

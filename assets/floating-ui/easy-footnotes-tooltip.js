@@ -10,7 +10,8 @@
         return;
     }
 
-    const { computePosition, flip, shift, offset, arrow } = FloatingUIDOM;
+    const { autoUpdate, computePosition, flip, shift, offset } = FloatingUIDOM;
+    let tooltipCount = 0;
 
     /**
      * Initialize tooltips for Easy Footnotes
@@ -23,6 +24,7 @@
             const tooltip = document.createElement('div');
             tooltip.className = 'efn-tooltip';
             tooltip.setAttribute('role', 'tooltip');
+            tooltip.id = 'efn-tooltip-' + (++tooltipCount);
 
             // Get content from title attribute
             const content = trigger.getAttribute('title');
@@ -31,25 +33,24 @@
             // Remove title to prevent native tooltip
             trigger.removeAttribute('title');
             trigger.setAttribute('data-efn-title', content);
+            trigger.setAttribute('aria-describedby', tooltip.id);
 
-            // Set tooltip content
-            tooltip.textContent = content;
+            // The title attribute carries already-processed footnote HTML. qTip
+            // rendered it as HTML, so retain links and allowed formatting here.
+            tooltip.innerHTML = content;
 
             // Add tooltip to body
             document.body.appendChild(tooltip);
 
             // Hide timeout reference
             let hideTimeout = null;
+            let fadeTimeout = null;
             let isTooltipHovered = false;
             let isTriggerHovered = false;
+            let isTriggerFocused = false;
+            let cleanupAutoUpdate = null;
 
-            /**
-             * Show tooltip
-             */
-            function show() {
-                clearTimeout(hideTimeout);
-
-                // Update position
+            function updatePosition() {
                 computePosition(trigger, tooltip, {
                     placement: 'bottom',
                     middleware: [
@@ -63,8 +64,26 @@
                         top: data.y + 'px'
                     });
                 });
+            }
+
+            function cancelHide() {
+                clearTimeout(hideTimeout);
+                clearTimeout(fadeTimeout);
+            }
+
+            /**
+             * Show tooltip
+             */
+            function show() {
+                cancelHide();
 
                 tooltip.style.display = 'block';
+                updatePosition();
+
+                if (!cleanupAutoUpdate) {
+                    cleanupAutoUpdate = autoUpdate(trigger, tooltip, updatePosition);
+                }
+
                 // Trigger reflow for animation
                 tooltip.offsetHeight;
                 tooltip.classList.add('efn-tooltip-show');
@@ -74,11 +93,16 @@
              * Hide tooltip with delay
              */
             function hide() {
+                cancelHide();
                 hideTimeout = setTimeout(function() {
-                    if (!isTooltipHovered && !isTriggerHovered) {
+                    if (!isTooltipHovered && !isTriggerHovered && !isTriggerFocused) {
                         tooltip.classList.remove('efn-tooltip-show');
-                        setTimeout(function() {
-                            if (!isTooltipHovered && !isTriggerHovered) {
+                        if (cleanupAutoUpdate) {
+                            cleanupAutoUpdate();
+                            cleanupAutoUpdate = null;
+                        }
+                        fadeTimeout = setTimeout(function() {
+                            if (!isTooltipHovered && !isTriggerHovered && !isTriggerFocused) {
                                 tooltip.style.display = 'none';
                             }
                         }, 200); // Wait for fade animation
@@ -103,12 +127,12 @@
              * Handle trigger focus (keyboard accessibility)
              */
             trigger.addEventListener('focus', function() {
-                isTriggerHovered = true;
+                isTriggerFocused = true;
                 show();
             });
 
             trigger.addEventListener('blur', function() {
-                isTriggerHovered = false;
+                isTriggerFocused = false;
                 hide();
             });
 
@@ -117,7 +141,7 @@
              */
             tooltip.addEventListener('mouseenter', function() {
                 isTooltipHovered = true;
-                clearTimeout(hideTimeout);
+                cancelHide();
             });
 
             tooltip.addEventListener('mouseleave', function() {
@@ -125,29 +149,14 @@
                 hide();
             });
 
-            /**
-             * Update position on scroll/resize
-             */
-            function updatePosition() {
-                if (tooltip.style.display === 'block') {
-                    computePosition(trigger, tooltip, {
-                        placement: 'bottom',
-                        middleware: [
-                            offset(6),
-                            flip(),
-                            shift({ padding: 5 })
-                        ]
-                    }).then(function(data) {
-                        Object.assign(tooltip.style, {
-                            left: data.x + 'px',
-                            top: data.y + 'px'
-                        });
-                    });
+            document.addEventListener('pointerdown', function(event) {
+                if (!trigger.contains(event.target) && !tooltip.contains(event.target)) {
+                    isTriggerHovered = false;
+                    isTriggerFocused = false;
+                    isTooltipHovered = false;
+                    hide();
                 }
-            }
-
-            window.addEventListener('scroll', updatePosition, true);
-            window.addEventListener('resize', updatePosition);
+            });
         });
     }
 

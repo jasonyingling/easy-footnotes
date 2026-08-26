@@ -3,8 +3,8 @@ Contributors: yingling017, twinpictures
 Donate link: http://jasonyingling.me
 Tags: footnotes, read, blogging, hover, tooltips, editing, endnotes, Formatting, writing, bibliography, notes, reference
 Requires at least: 3.0.1
-Tested up to: 6.8.1
-Stable tag: 1.1.14
+Tested up to: 7.1
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,15 +51,10 @@ add_filter( 'efn_footnote_label', 'efn_change_label_markup', 10, 2 );</code>
 
 = Can I disable the tooltip functionality? =
 
-Place the following code in your functions.php file to disable the tooltip features.
+Place the following code in your functions.php file to disable the Floating UI tooltip features.
 
 <pre>
-<code>function efn_deregister_scripts() {
-	wp_deregister_style( 'efn-tooltip-styles' );
-	wp_deregister_script( 'floating-ui' );
-	wp_deregister_script( 'efn-tooltip' );
-}
-add_action( 'wp_enqueue_scripts', 'efn_deregister_scripts' );</code>
+<code>add_filter( 'efn_enable_tooltips', '__return_false' );</code>
 </pre>
 
 = How can I reset the footnote count? =
@@ -75,11 +70,13 @@ This is a hard reset to fix a bug with themes/plugins using `do_shortcode( get_t
 
 == Changelog ==
 
+= 2.0.0 =
+* Replaced the unmaintained qTip2 tooltip library with Floating UI.
+* Tooltips retain footnote HTML, including links, and support keyboard and touch dismissal.
+* **Upgrade note:** the `imagesloaded`, `qtipcall`, and `qtipstyles` script/style handles were removed. Use the `efn_enable_tooltips` filter to disable tooltips instead of deregistering legacy qTip assets.
+
 = 1.1.14 =
-* Replaced unmaintained qtip2 library with actively maintained Floating UI for tooltip functionality
-* Improved tooltip performance and reduced library size
-* Maintained backward compatibility - tooltips work exactly the same for end users
-* Enhanced accessibility with better keyboard navigation support
+* Tested with WordPress 7.1.
 
 = 1.1.13 =
 * Fixed textdomain loading issue for WordPress 6.7 compatibility by preventing early translation calls during class construction.
