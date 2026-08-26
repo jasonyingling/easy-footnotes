@@ -287,6 +287,8 @@ class easyFootnotes {
 		$this->footnoteCount = 0;
 
 		$this->footnotes = array();
+		$this->footnoteLookup = array();
+		$this->usedFootnoteNumbers = array();
 
 		return $content;
 	}
@@ -332,6 +334,8 @@ class easyFootnotes {
 	public function short_code_reset() {
 		$this->footnoteCount = 0;
 		$this->footnotes = array();
+		$this->footnoteLookup = array();
+		$this->usedFootnoteNumbers = array();
 		return "";
 	}	
 }
