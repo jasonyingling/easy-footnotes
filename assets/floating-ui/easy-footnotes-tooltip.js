@@ -141,7 +141,7 @@
              */
             tooltip.addEventListener('mouseenter', function() {
                 isTooltipHovered = true;
-                cancelHide();
+                show();
             });
 
             tooltip.addEventListener('mouseleave', function() {

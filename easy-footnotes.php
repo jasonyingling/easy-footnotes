@@ -129,6 +129,17 @@ class easyFootnotes {
 
 		$post_id = get_the_ID();
 
+		// Keep duplicate-footnote state for repeated processing of one post, but
+		// never carry it into the next post on an archive or homepage.
+		if ( isset( $this->prevPost ) && $this->prevPost !== $post_id ) {
+			$this->footnoteCount       = 0;
+			$this->footnotes           = array();
+			$this->footnoteLookup      = array();
+			$this->usedFootnoteNumbers = array();
+		}
+
+		$this->prevPost = $post_id;
+
 		$content = do_shortcode( $content );
 		
 		$content_id = md5( preg_replace("/[^A-Za-z0-9 ]/", '', wp_strip_all_tags( html_entity_decode( $content ) ) ) );
