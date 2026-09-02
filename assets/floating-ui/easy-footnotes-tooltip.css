@@ -1,0 +1,76 @@
+/**
+ * Easy Footnotes Tooltip Styles
+ * Matches qtip2 Bootstrap theme styling
+ */
+.efn-tooltip {
+    /* Positioning */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    display: none;
+
+    /* Sizing */
+    max-width: 280px;
+    min-width: 50px;
+
+    /* Typography - matches qtip-bootstrap */
+    font-size: 14px;
+    line-height: 20px;
+    color: #333333;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    text-align: left;
+    word-wrap: break-word;
+
+    /* Appearance - matches qtip-bootstrap */
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+    /* Background clip */
+    background-clip: padding-box;
+
+    /* Animation */
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+
+    /* Ensure tooltip text doesn't wrap strangely */
+    white-space: normal;
+}
+
+.efn-tooltip-show {
+    opacity: 1;
+}
+
+/* Tooltip content area - matches qtip-bootstrap .qtip-content */
+.efn-tooltip::before {
+    /* This ensures proper padding similar to qtip-bootstrap .qtip-content */
+    content: '';
+    display: block;
+}
+
+/* Adjust tooltip on small screens */
+@media (max-width: 480px) {
+    .efn-tooltip {
+        max-width: calc(100vw - 20px);
+        font-size: 13px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .efn-tooltip {
+        border-width: 2px;
+        border-color: currentColor;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .efn-tooltip {
+        transition: none;
+    }
+}
